@@ -1,25 +1,24 @@
 import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
-import HeroSection from './components/HeroSection';
-import FeaturesSection from './components/FeaturesSection';
-import NewConfessionForm from './components/NewConfessionForm';
-import CategoriesSection from './components/CategoriesSection';
-import ConfessionFeed from './components/ConfessionFeed';
-import MentalHealthSupport from './components/MentalHealthSupport';
-import TestimonialsSection from './components/TestimonialsSection';
+import Home from './pages/Home';
+import ConfessMain from './components/Confession/ConfessMain';
+import Resources from './components/Resources/ResourcesHome';
 
 
 function App() {
   return (
-    <MainLayout>
-      <HeroSection />
-      <FeaturesSection />
-      <NewConfessionForm />
-      <CategoriesSection />
-      <ConfessionFeed />
-      <MentalHealthSupport />
-      <TestimonialsSection />
-    </MainLayout>
+    <Router>
+      <MainLayout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" />
+          <Route path="/confessions" element={<ConfessMain />}  />
+          <Route path="/categories"  />
+          <Route path="/resources" element={<Resources />}  />
+        </Routes>
+      </MainLayout>
+    </Router>
   );
 }
 

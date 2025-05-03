@@ -213,4 +213,4 @@ const ConfessionFeed = () => {
   );
 };
 
-export default ConfessionFeed;s
+export default ConfessionFeed;

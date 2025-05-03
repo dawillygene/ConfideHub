@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConfideHub Resources</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/all.min.css">
+    <style>
+         :root {
+            --primary: #0066CC;
+            --secondary: #FFAD03;
+            --tertiary: #FD9148;
+            --light: #ffffff;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            background-color: #f9fafb;
+        }
+        
+        .bg-primary {
+            background-color: var(--primary);
+        }
+        
+        .bg-secondary {
+            background-color: var(--secondary);
+        }
+        
+        .bg-tertiary {
+            background-color: var(--tertiary);
+        }
+        
+        .text-primary {
+            color: var(--primary);
+        }
+        
+        .text-secondary {
+            color: var(--secondary);
+        }
+        
+        .text-tertiary {
+            color: var(--tertiary);
+        }
+        
+        .border-primary {
+            border-color: var(--primary);
+        }
+        
+        .border-secondary {
+            border-color: var(--secondary);
+        }
+        
+        .border-tertiary {
+            border-color: var(--tertiary);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0055aa;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e89d00;
+        }
+        
+        .btn-tertiary {
+            background-color: var(--tertiary);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-tertiary:hover {
+            background-color: #ec8030;
+        }
+        
+        .resource-card {
+            transition: all 0.3s ease;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .category-tab {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .category-tab.active {
+            border-bottom: 3px solid var(--tertiary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .category-tab:hover:not(.active) {
+            border-bottom: 3px solid var(--secondary);
+            color: var(--tertiary);
+        }
+        
+        .emergency-banner {
+            background: linear-gradient(to right, #ff3b30, #ff9500);
+            color: white;
+        }
+        
+        .resource-content {
+            display: none;
+        }
+        
+        .resource-content.active {
+            display: block;
+        }
+        
+        .hotline-card {
+            border-left: 4px solid var(--tertiary);
+        }
+        
+        .recommendation-card {
+            background: linear-gradient(135deg, var(--primary) 0%, #1a7be0 100%);
+            color: white;
+        }
+        
+        .gradient-heading {
+            background: linear-gradient(to right, var(--primary), var(--tertiary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="text-3xl font-bold mr-2">
+                    <span class="text-primary">Confide</span><span class="text-tertiary">Hub</span>
+                </div>
+                <span class="bg-secondary text-white px-2 py-1 rounded text-xs font-bold">Resources</span>
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <a href="#emergency" class="text-gray-600 hover:text-primary">Emergency</a>
+                <a href="#categories" class="text-gray-600 hover:text-primary">Categories</a>
+                <a href="#education" class="text-gray-600 hover:text-primary">Education</a>
+                <a href="#tools" class="text-gray-600 hover:text-primary">Self-Help</a>
+                <a href="#professional" class="text-gray-600 hover:text-primary">Professional Help</a>
+            </nav>
+            <div class="flex items-center">
+                <button class="btn-primary px-4 py-2 rounded shadow-md text-sm font-medium">
+                    Back to ConfideHub
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Introduction -->
+        <section class="mb-12 text-center">
+            <h1 class="text-4xl font-bold mb-6">Support Resources</h1>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                We've compiled a comprehensive collection of resources to support your mental health and well-being. Whether you're facing a crisis or simply looking for ways to improve your daily life, you'll find helpful information and support options here.
+            </p>
+        </section>
+
+        <!-- Emergency Resources Section -->
+        <section id="emergency" class="mb-16">
+            <div class="emergency-banner p-4 rounded-lg mb-8 shadow-lg">
+                <div class="flex items-center">
+                    <div class="mr-4 text-3xl">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold">Need immediate help?</h2>
+                        <p>If you or someone you know is in crisis, please use these emergency resources right away.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Emergency Hotline Card 1 -->
+                <div class="bg-white p-6 rounded-lg shadow-md hotline-card">
+                    <h3 class="text-xl font-bold mb-2">International Suicide Prevention</h3>
+                    <p class="text-gray-600 mb-4">24/7 crisis support for those experiencing suicidal thoughts</p>
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-phone text-tertiary mr-2"></i>
+                        <span class="font-bold">1-800-273-8255</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-globe text-tertiary mr-2"></i>
+                        <a href="#" class="text-primary underline">befrienders.org</a>
+                    </div>
+                </div>
+
+                <!-- Emergency Hotline Card 2 -->
+                <div class="bg-white p-6 rounded-lg shadow-md hotline-card">
+                    <h3 class="text-xl font-bold mb-2">Crisis Text Line</h3>
+                    <p class="text-gray-600 mb-4">Text-based crisis support available 24/7</p>
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-comment-alt text-tertiary mr-2"></i>
+                        <span class="font-bold">Text HOME to 741741</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-globe text-tertiary mr-2"></i>
+                        <a href="#" class="text-primary underline">crisistextline.org</a>
+                    </div>
+                </div>
+
+                <!-- Emergency Hotline Card 3 - Tanzania specific -->
+                <div class="bg-white p-6 rounded-lg shadow-md hotline-card">
+                    <h3 class="text-xl font-bold mb-2">Tanzania Depression Support</h3>
+                    <p class="text-gray-600 mb-4">Mental health support services in Tanzania</p>
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-phone text-tertiary mr-2"></i>
+                        <span class="font-bold">+255 744 466 869</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-globe text-tertiary mr-2"></i>
+                        <a href="#" class="text-primary underline">tanzaniadepressionfoundation.org</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-white p-6 rounded-lg shadow-md border-l-4 border-primary">
+                <h3 class="text-xl font-bold mb-2">Confidential Resources</h3>
+                <p class="text-gray-600">
+                    All communication with these resources is confidential. Your information and identity will be protected. If you're in immediate physical danger, please contact your local emergency services by dialing <span class="font-bold">911</span>                    (US) or <span class="font-bold">112</span> (most of Europe) or <span class="font-bold">999</span> (Tanzania).
+                </p>
+            </div>
+        </section>
+
+        <!-- Categorized Resources Section -->
+        <section id="categories" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 gradient-heading">Find Support By Category</h2>
+
+            <!-- Category tabs -->
+            <div class="flex flex-wrap border-b border-gray-200 mb-8">
+                <div class="category-tab active px-4 py-2 text-lg" data-target="mental-health">Mental Health</div>
+                <div class="category-tab px-4 py-2 text-lg" data-target="relationships">Relationships</div>
+                <div class="category-tab px-4 py-2 text-lg" data-target="career">Career Stress</div>
+                <div class="category-tab px-4 py-2 text-lg" data-target="family">Family Issues</div>
+                <div class="category-tab px-4 py-2 text-lg" data-target="lgbtq">LGBTQ+ Safe Space</div>
+            </div>
+
+            <!-- Category Content: Mental Health -->
+            <div id="mental-health" class="resource-content active">
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Resource Card 1 -->
+                    <div class="resource-card bg-white">
+                        <div class="h-40 bg-primary flex items-center justify-center">
+                            <i class="fas fa-brain text-white text-5xl"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">Understanding Anxiety</h3>
+                            <p class="text-gray-600 mb-4">
+                                Learn about anxiety disorders, symptoms, and coping strategies from mental health experts.
+                            </p>
+                            <a href="#" class="btn-tertiary px-4 py-2 rounded inline-block">Learn More</a>
+                        </div>
+                    </div>
+
+                    <!-- Resource Card 2 -->
+                    <div class="resource-card bg-white">
+                        <div class="h-40 bg-secondary flex items-center justify-center">
+                            <i class="fas fa-heart text-white text-5xl"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">Depression Resources</h3>
+                            <p class="text-gray-600 mb-4">
+                                Find information, treatment options, and support groups for depression and related conditions.
+                            </p>
+                            <a href="#" class="btn-tertiary px-4 py-2 rounded inline-block">Learn More</a>
+                        </div>
+                    </div>
+
+                    <!-- Resource Card 3 -->
+                    <div class="resource-card bg-white">
+                        <div class="h-40 bg-tertiary flex items-center justify-center">
+                            <i class="fas fa-balance-scale text-white text-5xl"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">Stress Management</h3>
+                            <p class="text-gray-600 mb-4">
+                                Practical techniques and exercises to help manage and reduce stress in your daily life.
+                            </p>
+                            <a href="#" class="btn-tertiary px-4 py-2 rounded inline-block">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+                    <h4 class="text-lg font-bold mb-2">Organizations & Support Groups</h4>
+                    <ul class="list-disc ml-6 space-y-2">
+                        <li><a href="#" class="text-primary hover:underline">World Health Organization (WHO) - Mental Health</a></li>
+                        <li><a href="#" class="text-primary hover:underline">Mental Health Foundation</a></li>
+                        <li><a href="#" class="text-primary hover:underline">National Alliance on Mental Illness (NAMI)</a></li>
+                        <li><a href="#" class="text-primary hover:underline">Tanzania Mental Health Association</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Category Content: Relationships -->
+            <div id="relationships" class="resource-content">
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Resource Card 1 -->
+                    <div class="resource-card bg-white">
+                        <div class="h-40 bg-primary flex items-center justify-center">
+                            <i class="fas fa-hands-helping text-white text-5xl"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">Healthy Relationships</h3>
+                            <p class="text-gray-600 mb-4">
+                                Guides and resources for building and maintaining healthy, supportive relationships.
+                            </p>
+                            <a href="#" class="btn-tertiary px-4 py-2 rounded inline-block">Learn More</a>
+                        </div>
+                    </div>
+
+                    <!-- Resource Card 2 -->
+                    <div class="resource-card bg-white">
+                        <div class="h-40 bg-secondary flex items-center justify-center">
+                            <i class="fas fa-heart-broken text-white text-5xl"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">Coping with Breakups</h3>
+                            <p class="text-gray-600 mb-4">
+                                Support resources and guidance for navigating the end of relationships in healthy ways.
+                            </p>
+                            <a href="#" class="btn-tertiary px-4 py-2 rounded inline-block">Learn More</a>
+                        </div>
+                    </div>
+
+                    <!-- Resource Card 3 -->
+                    <div class="resource-card bg-white">
+                        <div class="h-40 bg-tertiary flex items-center justify-center">
+                            <i class="fas fa-comments text-white text-5xl"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">Communication Skills</h3>
+                            <p class="text-gray-600 mb-4">
+                                Learn effective communication techniques to improve personal and professional relationships.
+                            </p>
+                            <a href="#" class="btn-tertiary px-4 py-2 rounded inline-block">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+                    <h4 class="text-lg font-bold mb-2">Relationship Resources</h4>
+                    <ul class="list-disc ml-6 space-y-2">
+                        <li><a href="#" class="text-primary hover:underline">The Gottman Institute</a></li>
+                        <li><a href="#" class="text-primary hover:underline">Love Is Respect (Domestic Violence Support)</a></li>
+                        <li><a href="#" class="text-primary hover:underline">Relationship Foundation of Tanzania</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Category Content: Career Stress -->
+            <div id="career" class="resource-content">
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Resource Card 1 -->
+                    <div class="resource-card bg-white">
+                        <div class="h-40 bg-primary flex items-center justify-center">
+                            <i class="fas fa-briefcase text-white text-5xl"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">Workplace Stress Management</h3>
+                            <p class="text-gray-600 mb-4">
+                                Effective techniques for managing and reducing stress in professional environments.
+                            </p>
+                            <a href="#" class="btn-tertiary px-4 py-2 rounded inline-block">Learn More</a>
+                        </div>
+                    </div>
+
+                    <!-- Resource Card 2 -->
+                    <div class="resource-card bg-white">
+                        <div class="h-40 bg-secondary flex items-center justify-center">
+                            <i class="fas fa-balance-scale-right text-white text-5xl"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">Work-Life Balance</h3>
+                            <p class="text-gray-600 mb-4">
+                                Resources for creating a healthier balance between work responsibilities and personal life.
+                            </p>
+                            <a href="#" class="btn-tertiary px-4 py-2 rounded inline-block">Learn More</a>
+                        </div>
+                    </div>
+
+                    <!-- Resource Card 3 -->
+                    <div class="resource-card bg-white">
+                        <div class="h-40 bg-tertiary flex items-center justify-center">
+                            <i class="fas fa-user-graduate text-white text-5xl"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">Career Development</h3>
+                            <p class="text-gray-600 mb-4">
+                                Support for career growth, job searching, and professional development opportunities.
+                            </p>
+                            <a href="#" class="btn-tertiary px-4 py-2 rounded inline-block">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+                    <h4 class="text-lg font-bold mb-2">Career Resources</h4>
+                    <ul class="list-disc ml-6 space-y-2">
+                        <li><a href="#" class="text-primary hover:underline">International Labour Organization (ILO)</a></li>
+                        <li><a href="#" class="text-primary hover:underline">Tanzania Employment Services Agency</a></li>
+                        <li><a href="#" class="text-primary hover:underline">LinkedIn Learning Career Resources</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Category Content: Family Issues -->
+            <div id="family" class="resource-content">
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Resource Card 1 -->
+                    <div class="resource-card bg-white">
+                        <div class="h-40 bg-primary flex items-center justify-center">
+                            <i class="fas fa-home text-white text-5xl"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">Family Counseling Resources</h3>
+                            <p class="text-gray-600 mb-4">
+                                Information about family therapy and counseling services for various family challenges.
+                            </p>
+                            <a href="#" class="btn-tertiary px-4 py-2 rounded inline-block">Learn More</a>
+                        </div>
+                    </div>
+
+                    <!-- Resource Card 2 -->
+                    <div class="resource-card bg-white">
+                        <div class="h-40 bg-secondary flex items-center justify-center">
+                            <i class="fas fa-child text-white text-5xl"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">Parenting Support</h3>
+                            <p class="text-gray-600 mb-4">
+                                Resources and guidance for parents navigating the challenges of raising children.
+                            </p>
+                            <a href="#" class="btn-tertiary px-4 py-2 rounded inline-block">Learn More</a>
+                        </div>
+                    </div>
+
+                    <!-- Resource Card 3 -->
+                    <div class="resource-card bg-white">
+                        <div class="h-40 bg-tertiary flex items-center justify-center">
+                            <i class="fas fa-users text-white text-5xl"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">Family Conflict Resolution</h3>
+                            <p class="text-gray-600 mb-4">
+                                Techniques and resources for resolving conflicts and improving family communication.
+                            </p>
+                            <a href="#" class="btn-tertiary px-4 py-2 rounded inline-block">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+                    <h4 class="text-lg font-bold mb-2">Family Support Organizations</h4>
+                    <ul class="list-disc ml-6 space-y-2">
+                        <li><a href="#" class="text-primary hover:underline">Family Lives (Support Helpline)</a></li>
+                        <li><a href="#" class="text-primary hover:underline">Tanzania Family Organization</a></li>
+                        <li><a href="#" class="text-primary hover:underline">International Family Therapy Association</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Category Content: LGBTQ+ Safe Space -->
+            <div id="lgbtq" class="resource-content">
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Resource Card 1 -->
+                    <div class="resource-card bg-white">
+                        <div class="h-40 bg-primary flex items-center justify-center">
+                            <i class="fas fa-rainbow text-white text-5xl"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">LGBTQ+ Crisis Support</h3>
+                            <p class="text-gray-600 mb-4">
+                                Crisis intervention resources specifically for LGBTQ+ individuals experiencing mental health challenges.
+                            </p>
+                            <a href="#" class="btn-tertiary px-4 py-2 rounded inline-block">Learn More</a>
+                        </div>
+                    </div>
+
+                    <!-- Resource Card 2 -->
+                    <div class="resource-card bg-white">
+                        <div class="h-40 bg-secondary flex items-center justify-center">
+                            <i class="fas fa-hands-helping text-white text-5xl"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">Coming Out Resources</h3>
+                            <p class="text-gray-600 mb-4">
+                                Support and guidance for individuals navigating the coming out process and identity affirmation.
+                            </p>
+                            <a href="#" class="btn-tertiary px-4 py-2 rounded inline-block">Learn More</a>
+                        </div>
+                    </div>
+
+                    <!-- Resource Card 3 -->
+                    <div class="resource-card bg-white">
+                        <div class="h-40 bg-tertiary flex items-center justify-center">
+                            <i class="fas fa-globe-africa text-white text-5xl"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">LGBTQ+ Resources in Tanzania</h3>
+                            <p class="text-gray-600 mb-4">
+                                Local and international support options for LGBTQ+ individuals in Tanzania and East Africa.
+                            </p>
+                            <a href="#" class="btn-tertiary px-4 py-2 rounded inline-block">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+                    <h4 class="text-lg font-bold mb-2">LGBTQ+ Support Organizations</h4>
+                    <ul class="list-disc ml-6 space-y-2">
+                        <li><a href="#" class="text-primary hover:underline">The Trevor Project (Crisis Intervention)</a></li>
+                        <li><a href="#" class="text-primary hover:underline">ILGA (International Lesbian, Gay, Bisexual, Trans and Intersex Association)</a></li>
+                        <li><a href="#" class="text-primary hover:underline">Pan Africa ILGA</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Educational Resources Section -->
+        <section id="education" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 gradient-heading">Educational Resources</h2>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-10">
+                <!-- Article Collections -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-primary p-3 rounded-full mr-4">
+                            <i class="fas fa-book text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Articles & Guides</h3>
+                    </div>
+
+                    <ul class="space-y-4">
+                        <li class="border-b border-gray-100 pb-3">
+                            <a href="#" class="block hover:bg-gray-50 p-2 rounded">
+                                <h4 class="font-bold text-primary">Understanding Mental Health Basics</h4>
+                                <p class="text-sm text-gray-600">A comprehensive guide to mental health conditions, treatments, and wellness strategies.</p>
+                            </a>
+                        </li>
+                        <li class="border-b border-gray-100 pb-3">
+                            <a href="#" class="block hover:bg-gray-50 p-2 rounded">
+                                <h4 class="font-bold text-primary">Building Emotional Resilience</h4>
+                                <p class="text-sm text-gray-600">Learn techniques to develop and strengthen your emotional resilience in challenging times.</p>
+                            </a>
+                        </li>
+                        <li class="border-b border-gray-100 pb-3">
+                            <a href="#" class="block hover:bg-gray-50 p-2 rounded">
+                                <h4 class="font-bold text-primary">Mindfulness for Beginners</h4>
+                                <p class="text-sm text-gray-600">Simple mindfulness practices that can help reduce stress and improve mental well-being.</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="block hover:bg-gray-50 p-2 rounded">
+                                <h4 class="font-bold text-primary">Cultural Perspectives on Mental Health</h4>
+                                <p class="text-sm text-gray-600">Exploring how mental health is viewed across different cultures, including Tanzania.</p>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <a href="#" class="btn-secondary mt-6 px-4 py-2 rounded inline-block">View All Articles</a>
+                </div>
+
+                <!-- Video Resources -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-tertiary p-3 rounded-full mr-4">
+                            <i class="fas fa-video text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Video Resources</h3>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="border-b border-gray-100 pb-3">
+                            <h4 class="font-bold text-tertiary mb-2">Anxiety Management Techniques</h4>
+                            <div class="aspect-w-16 aspect-h-9 bg-gray-100 rounded-lg flex items-center justify-center mb-2">
+                                <i class="fas fa-play-circle text-5xl text-gray-400"></i>
+                            </div>
+                            <p class="text-sm text-gray-600">15-minute guided video with practical techniques for managing anxiety.</p>
+                        </div>
+
+                        <div class="border-b border-gray-100 pb-3">
+                            <h4 class="font-bold text-tertiary mb-2">Understanding Depression</h4>
+                            <div class="aspect-w-16 aspect-h-9 bg-gray-100 rounded-lg flex items-center justify-center mb-2">
+                                <i class="fas fa-play-circle text-5xl text-gray-400"></i>
+                            </div>
+                            <p class="text-sm text-gray-600">Expert explanation of depression, its symptoms, and treatment options.</p>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-tertiary mb-2">Supporting a Loved One</h4>
+                            <div class="aspect-w-16 aspect-h-9 bg-gray-100 rounded-lg flex items-center justify-center mb-2">
+                                <i class="fas fa-play-circle text-5xl text-gray-400"></i>
+                            </div>
+                            <p class="text-sm text-gray-600">How to provide effective support to someone experiencing mental health challenges.</p>
+                        </div>
+                    </div>
+
+                    <a href="#" class="btn-secondary mt-6 px-4 py-2 rounded inline-block">Browse Video Library</a>
+                </div>
+            </div>
+
+            <!-- Recommended Books -->
+            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                <h3 class="text-xl font-bold mb-4">Recommended Books</h3>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="flex">
+                        <div class="w-16 h-24 bg-gray-300 rounded flex-shrink-0 mr-3"></div>
+                        <div>
+                            <h4 class="font-bold">Feeling Good</h4>
+                            <p class="text-sm text-gray-600">By David D. Burns</p>
+                            <p class="text-xs text-gray-500 mt-1">The New Mood Therapy</p>
+                        </div>
+                    </div>
+
+                    <div class="flex">
+                        <div class="w-16 h-24 bg-gray-300 rounded flex-shrink-0 mr-3"></div>
+                        <div>
+                            <h4 class="font-bold">The Gifts of Imperfection</h4>
+                            <p class="text-sm text-gray-600">By Brené Brown</p>
+                            <p class="text-xs text-gray-500 mt-1">Let Go of Who You Think You're Supposed to Be</p>
+                        </div>
+                    </div>
+
+                    <div class="flex">
+                        <div class="w-16 h-24 bg-gray-300 rounded flex-shrink-0 mr-3"></div>
+                        <div>
+                            <h4 class="font-bold">Man's Search for Meaning</h4>
+                            <p class="text-sm text-gray-600">By Viktor E. Frankl</p>
+                            <p class="text-xs text-gray-500 mt-1">Finding Purpose in Difficult Times</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Self-Help Tools Section -->
+        <section id="tools" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 gradient-heading">Self-Help Tools</h2>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Tool Card 1: Mood Tracker -->
+                <div class="resource-card bg-white overflow-visible">
+                    <div class="h-12 bg-primary rounded-t-lg relative">
+                        <div class="absolute -bottom-8 left-6 bg-white p-3 rounded-full shadow-lg">
+                            <i class="fas fa-chart-line text-primary text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-12">
+                        <h3 class="text-xl font-bold mb-2">Mood Tracker</h3>
+                        <p class="text-gray-600 mb-4">
+                            Track your daily mood patterns to identify triggers and improvements over time.
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500 mb-4">
+                            <i class="fas fa-lock mr-2"></i>
+                            <span>Private and anonymous</span>
+                        </div>
+                        <a href="#" class="btn-primary px-4 py-2 rounded inline-block">Start Tracking</a>
+                    </div>
+                </div>
+
+                <!-- Tool Card 2: Guided Meditation -->
+                <div class="resource-card bg-white overflow-visible">
+                    <div class="h-12 bg-secondary rounded-t-lg relative">
+                        <div class="absolute -bottom-8 left-6 bg-white p-3 rounded-full shadow-lg">
+                            <i class="fas fa-spa text-secondary text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-12">
+                        <h3 class="text-xl font-bold mb-2">Guided Meditation</h3>
+                        <p class="text-gray-600 mb-4">
+                            Access free guided meditations ranging from 2-30 minutes for stress relief and mindfulness.
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500 mb-4">
+                            <i class="fas fa-headphones mr-2"></i>
+                            <span>Audio and text versions available</span>
+                        </div>
+                        <a href="#" class="btn-primary px-4 py-2 rounded inline-block">Start Meditating</a>
+                    </div>
+                </div>
+
+                <!-- Tool Card 3: Journal Prompts -->
+                <div class="resource-card bg-white overflow-visible">
+                    <div class="h-12 bg-tertiary rounded-t-lg relative">
+                        <div class="absolute -bottom-8 left-6 bg-white p-3 rounded-full shadow-lg">
+                            <i class="fas fa-book-open text-tertiary text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-12">
+                        <h3 class="text-xl font-bold mb-2">Journal Prompts</h3>
+                        <p class="text-gray-600 mb-4">
+                            Thought-provoking prompts to help process emotions and gain personal insights through writing.
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500 mb-4">
+                            <i class="fas fa-random mr-2"></i>
+                            <span>New prompts daily</span>
+                        </div>
+                        <a href="#" class="btn-primary px-4 py-2 rounded inline-block">Start Writing</a>
+                    </div>
+                </div>
+
+                <!-- Tool Card 4: Anxiety Toolkit -->
+                <div class="resource-card bg-white overflow-visible">
+                    <div class="h-12 bg-primary rounded-t-lg relative">
+                        <div class="absolute -bottom-8 left-6 bg-white p-3 rounded-full shadow-lg">
+                            <i class="fas fa-toolbox text-primary text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-12">
+                        <h3 class="text-xl font-bold mb-2">Anxiety Toolkit</h3>
+                        <p class="text-gray-600 mb-4">
+                            Quick access to grounding techniques, breathing exercises, and distraction methods.
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500 mb-4">
+                            <i class="fas fa-heart mr-2"></i>
+                            <span>Used by 10,000+ members</span>
+                        </div>
+                        <a href="#" class="btn-primary px-4 py-2 rounded inline-block">Access Toolkit</a>
+                    </div>
+                </div>
+
+                <!-- Tool Card 5: Sleep Improvement -->
+                <div class="resource-card bg-white overflow-visible">
+                    <div class="h-12 bg-secondary rounded-t-lg relative">
+                        <div class="absolute -bottom-8 left-6 bg-white p-3 rounded-full shadow-lg">
+                            <i class="fas fa-moon text-secondary text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-12">
+                        <h3 class="text-xl font-bold mb-2">Sleep Improvement</h3>
+                        <p class="text-gray-600 mb-4">
+                            Resources and techniques to improve sleep quality, including sleep meditations and bedtime routines.
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500 mb-4">
+                            <i class="fas fa-clock mr-2"></i>
+                            <span>Evidence-based techniques</span>
+                        </div>
+                        <a href="#" class="btn-primary px-4 py-2 rounded inline-block">Better Sleep</a>
+                    </div>
+                </div>
+
+                <!-- Tool Card 6: Coping Skills Library -->
+                <div class="resource-card bg-white overflow-visible">
+                    <div class="h-12 bg-tertiary rounded-t-lg relative">
+                        <div class="absolute -bottom-8 left-6 bg-white p-3 rounded-full shadow-lg">
+                            <i class="fas fa-list-alt text-tertiary text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-12">
+                        <h3 class="text-xl font-bold mb-2">Coping Skills Library</h3>
+                        <p class="text-gray-600 mb-4">
+                            Searchable database of healthy coping mechanisms for different emotional challenges.
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500 mb-4">
+                            <i class="fas fa-search mr-2"></i>
+                            <span>100+ strategies available</span>
+                        </div>
+                        <a href="#" class="btn-primary px-4 py-2 rounded inline-block">Browse Skills</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Professional Support Section -->
+        <section id="professional" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 gradient-heading">Professional Support</h2>
+
+            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                <h3 class="text-xl font-bold mb-4">Finding the Right Professional Help</h3>
+                <p class="text-gray-600 mb-4">
+                    While peer support and self-help tools are valuable, sometimes professional assistance is needed. Here are resources to help you find appropriate professional support.
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-6 mt-6">
+                    <div class="border-l-4 border-primary pl-4">
+                        <h4 class="font-bold mb-2">Types of Mental Health Professionals</h4>
+                        <ul class="list-disc ml-6 space-y-1 text-gray-600">
+                            <li>Psychiatrists (medical doctors who can prescribe medication)</li>
+                            <li>Psychologists (provide therapy and psychological testing)</li>
+                            <li>Licensed Counselors and Therapists</li>
+                            <li>Social Workers</li>
+                            <li>Psychiatric Nurses</li>
+                        </ul>
+                    </div>
+
+                    <div class="border-l-4 border-tertiary pl-4">
+                        <h4 class="font-bold mb-2">When to Seek Professional Help</h4>
+                        <ul class="list-disc ml-6 space-y-1 text-gray-600">
+                            <li>Persistent feelings of sadness or anxiety</li>
+                            <li>Difficulty functioning in daily life</li>
+                            <li>Thoughts of harming yourself or others</li>
+                            <li>Substance use concerns</li>
+                            <li>Major life transitions or trauma</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Professional Support Options -->
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <!-- Option 1: Find a Therapist -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="mb-4 text-center">
+                        <div class="inline-block p-3 rounded-full bg-primary bg-opacity-10">
+                            <i class="fas fa-user-md text-primary text-3xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-center">Find a Therapist</h3>
+                    <p class="text-gray-600 mb-4 text-center">
+                        Search for mental health professionals in your area or offering online services.
+                    </p>
+                    <a href="#" class="btn-primary w-full py-2 rounded text-center block">Search Directory</a>
+                </div>
+
+                <!-- Option 2: Online Therapy -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="mb-4 text-center">
+                        <div class="inline-block p-3 rounded-full bg-secondary bg-opacity-10">
+                            <i class="fas fa-laptop text-secondary text-3xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-center">Online Therapy</h3>
+                    <p class="text-gray-600 mb-4 text-center">
+                        Connect with licensed therapists through secure video, phone, or messaging.
+                    </p>
+                    <a href="#" class="btn-secondary w-full py-2 rounded text-center block">Explore Options</a>
+                </div>
+
+                <!-- Option 3: Low-Cost Options -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="mb-4 text-center">
+                        <div class="inline-block p-3 rounded-full bg-tertiary bg-opacity-10">
+                            <i class="fas fa-hand-holding-heart text-tertiary text-3xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-center">Affordable Options</h3>
+                    <p class="text-gray-600 mb-4 text-center">
+                        Resources for low-cost or free mental health services in Tanzania and globally.
+                    </p>
+                    <a href="#" class="btn-tertiary w-full py-2 rounded text-center block">Find Services</a>
+                </div>
+            </div>
+
+            <!-- Therapy FAQ -->
+            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                <h3 class="text-xl font-bold mb-4">Therapy FAQ</h3>
+
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="font-bold text-primary">What should I expect in my first therapy session?</h4>
+                        <p class="text-gray-600 mt-1">
+                            Your first session typically involves discussing your background, current concerns, and treatment goals. The therapist will explain their approach and answer your questions.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-primary">How do I know if therapy is working?</h4>
+                        <p class="text-gray-600 mt-1">
+                            Progress in therapy often includes feeling better understood, gaining new insights, developing better coping skills, and seeing positive changes in your thoughts, feelings, and behaviors.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-primary">Is therapy confidential?</h4>
+                        <p class="text-gray-600 mt-1">
+                            Yes, with limited exceptions. Therapists maintain confidentiality except in cases where there is risk of harm to yourself or others, or when required by law (such as suspected abuse of a child or vulnerable adult).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Personalized Recommendations Section -->
+        <section class="mb-16">
+            <div class="recommendation-card p-6 rounded-lg shadow-lg">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="mb-4 md:mb-0 md:mr-6">
+                        <i class="fas fa-lightbulb text-yellow-300 text-5xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold mb-2">Personalized Recommendations</h2>
+                        <p class="mb-4">
+                            Based on the confessions and topics you've engaged with, we can provide tailored resources that may be helpful for your specific situation.
+                        </p>
+                        <button class="bg-white text-primary font-bold px-6 py-2 rounded shadow-md hover:bg-gray-100 transition duration-300">
+                            Get Recommendations
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Additional Resources Section -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 gradient-heading">Additional Resources</h2>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Apps -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold mb-4">Recommended Apps</h3>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+                            <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-brain text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">Calm</h4>
+                                <p class="text-sm text-gray-600">Meditation and sleep stories to reduce stress and anxiety</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+                            <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-smile text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">Headspace</h4>
+                                <p class="text-sm text-gray-600">Guided meditation and mindfulness techniques</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+                            <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-journal-whills text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">Daylio</h4>
+                                <p class="text-sm text-gray-600">Mood tracking and journaling app</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Podcasts -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold mb-4">Mental Health Podcasts</h3>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+                            <div class="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-podcast text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">The Happiness Lab</h4>
+                                <p class="text-sm text-gray-600">Science-based approaches to happiness and well-being</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+                            <div class="w-12 h-12 bg-indigo-500 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-podcast text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">Unlocking Us</h4>
+                                <p class="text-sm text-gray-600">Brené Brown explores human connection and emotions</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+                            <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-podcast text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">Mentally Yours</h4>
+                                <p class="text-sm text-gray-600">Open discussions about mental health experiences</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feedback Section -->
+        <section class="mb-16">
+            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                <h3 class="text-xl font-bold mb-4">Suggest a Resource</h3>
+                <p class="text-gray-600 mb-6">
+                    Know of a helpful resource that should be included here? Let us know! We're constantly updating our resource collection based on community recommendations.
+                </p>
+
+                <form>
+                    <div class="mb-4">
+                        <label for="resource-name" class="block text-gray-700 font-medium mb-2">Resource Name</label>
+                        <input type="text" id="resource-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="resource-type" class="block text-gray-700 font-medium mb-2">Resource Type</label>
+                        <select id="resource-type" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option>Website</option>
+                            <option>Book</option>
+                            <option>App</option>
+                            <option>Hotline</option>
+                            <option>Organization</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="resource-description" class="block text-gray-700 font-medium mb-2">Description</label>
+                        <textarea id="resource-description" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary px-6 py-2 rounded">Submit Resource</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">ConfideHub</h3>
+                    <p class="text-gray-400">
+                        A safe space for anonymous confessions and community support.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Home</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Confessions</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Categories</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Resources</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Policies</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Community Guidelines</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">GDPR Compliance</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Emergency Contacts</h4>
+                    <ul class="space-y-2">
+                        <li class="text-gray-400">International: <span class="text-white">1-800-273-8255</span></li>
+                        <li class="text-gray-400">Tanzania: <span class="text-white">+255 744 466 869</span></li>
+                        <li class="text-gray-400">Text Crisis Line: <span class="text-white">Text HOME to 741741</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-500">
+                <p>&copy; 2023 ConfideHub. All rights reserved. Made with compassion and care.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Category tabs functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryTabs = document.querySelectorAll('.category-tab');
+
+            categoryTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Hide all content
+                    const allContent = document.querySelectorAll('.resource-content');
+                    allContent.forEach(content => {
+                        content.classList.remove('active');
+                    });
+
+                    // Remove active class from all tabs
+                    categoryTabs.forEach(t => {
+                        t.classList.remove('active');
+                    });
+
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+
+                    // Show selected content
+                    const targetId = this.getAttribute('data-target');
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

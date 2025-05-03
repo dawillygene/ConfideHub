@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confess - Share Anonymously</title>
+    <script src="https://cdn.jsdelivr.net/npm/react@17/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/babel-standalone@6/babel.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+         :root {
+            --fb-blue: #1877f2;
+            --fb-blue-hover: #166fe5;
+            --fb-bg: #f0f2f5;
+            --fb-text: #050505;
+            --fb-secondary-text: #65676b;
+            --fb-divider: #ced0d4;
+            --fb-comment-bg: #f2f3f5;
+            --fb-like: #2078f4;
+            --fb-support: #f7b928;
+            --fb-comment: #65676b;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--fb-bg);
+            color: var(--fb-text);
+        }
+        
+        .fb-header {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        
+        .fb-logo {
+            color: var(--fb-blue);
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        
+        .fb-search {
+            background-color: var(--fb-bg);
+            border-radius: 50px;
+        }
+        
+        .nav-icon {
+            color: var(--fb-secondary-text);
+            font-size: 1.25rem;
+            transition: all 0.2s;
+        }
+        
+        .nav-icon:hover,
+        .nav-icon.active {
+            color: var(--fb-blue);
+        }
+        
+        .nav-icon.active:after {
+            content: '';
+            display: block;
+            height: 3px;
+            background: var(--fb-blue);
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+        }
+        
+        .story-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--fb-bg);
+            border: 3px solid var(--fb-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .post-card {
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        .post-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .reaction-btn {
+            padding: 8px;
+            border-radius: 4px;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            color: var(--fb-secondary-text);
+        }
+        
+        .reaction-btn:hover {
+            background-color: var(--fb-comment-bg);
+        }
+        
+        .like-active {
+            color: var(--fb-like);
+        }
+        
+        .support-active {
+            color: var(--fb-support);
+        }
+        
+        .bookmark-active {
+            color: var(--fb-blue);
+        }
+        
+        .category-pill {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+        
+        .border-primary {
+            border-left-color: var(--fb-blue);
+        }
+        
+        .border-secondary {
+            border-left-color: #f7b928;
+        }
+        
+        .border-tertiary {
+            border-left-color: #9c27b0;
+        }
+        
+        .timer-section {
+            font-size: 0.75rem;
+            color: #f44336;
+        }
+        
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .sidebar-item:hover {
+            background-color: var(--fb-comment-bg);
+        }
+        
+        .sidebar-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--fb-comment-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+        
+        .create-section {
+            background: #fff;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            padding: 12px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .create-input {
+            background-color: var(--fb-comment-bg);
+            border-radius: 20px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .create-input:hover {
+            background-color: var(--fb-divider);
+        }
+        
+        .btn-filter.active {
+            background-color: var(--fb-blue) !important;
+            color: white !important;
+            border-color: var(--fb-blue) !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const Header = () => { return (
+        <header className="fb-header">
+            <div className="container mx-auto px-4">
+                {/* Desktop Header */}
+                <div className="desktop-nav flex items-center justify-between h-14">
+                    <div className="flex items-center">
+                        <div className="fb-logo mr-2">C</div>
+                        <div className="fb-search flex items-center ml-2 px-3 py-2">
+                            <i className="fas fa-search text-gray-500 mr-2"></i>
+                            <input type="text" placeholder="Search Confess" className="bg-transparent outline-none w-64" />
+                        </div>
+                    </div>
+                    <div className="flex space-x-2">
+                        <div className="relative flex items-center justify-center w-10 h-10 mx-2 cursor-pointer hover:bg-gray-100 rounded-full">
+                            <i className="fas fa-bell nav-icon"></i>
+                        </div>
+                        <div className="relative flex items-center justify-center w-10 h-10 mx-2 cursor-pointer hover:bg-gray-100 rounded-full">
+                            <i className="fas fa-comment-alt nav-icon"></i>
+                        </div>
+                        <div className="relative flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 cursor-pointer">
+                            <i className="fas fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+                {/* Mobile Header */}
+                <div className="mobile-nav flex items-center justify-between h-14">
+                    <div className="fb-logo">C</div>
+                    <div className="flex items-center">
+                        <div className="relative flex items-center justify-center w-10 h-10 mx-2">
+                            <i className="fas fa-search text-gray-500"></i>
+                        </div>
+                        <div className="relative flex items-center justify-center w-10 h-10 mx-2">
+                            <i className="fas fa-bell nav-icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/* Navigation Tabs */}
+            <div className="desktop-nav border-t border-gray-200">
+                <div className="container mx-auto flex justify-center">
+                    <div className="relative flex items-center justify-center h-14 px-4 cursor-pointer">
+                        <i className="fas fa-home nav-icon active"></i>
+                    </div>
+                    <div className="relative flex items-center justify-center h-14 px-4 cursor-pointer">
+                        <i className="fas fa-users nav-icon"></i>
+                    </div>
+                    <div className="relative flex items-center justify-center h-14 px-4 cursor-pointer">
+                        <i className="fas fa-user-check nav-icon"></i>
+                    </div>
+                    <div className="relative flex items-center justify-center h-14 px-4 cursor-pointer">
+                        <i className="fas fa-bookmark nav-icon"></i>
+                    </div>
+                </div>
+            </div>
+            {/* Mobile Bottom Navigation */}
+            <div className="mobile-nav fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
+                <div className="flex justify-around">
+                    <div className="relative flex items-center justify-center h-14 px-4 cursor-pointer">
+                        <i className="fas fa-home nav-icon active"></i>
+                    </div>
+                    <div className="relative flex items-center justify-center h-14 px-4 cursor-pointer">
+                        <i className="fas fa-users nav-icon"></i>
+                    </div>
+                    <div className="relative flex items-center justify-center h-14 px-4 cursor-pointer">
+                        <i className="fas fa-plus-circle nav-icon"></i>
+                    </div>
+                    <div className="relative flex items-center justify-center h-14 px-4 cursor-pointer">
+                        <i className="fas fa-user-check nav-icon"></i>
+                    </div>
+                    <div className="relative flex items-center justify-center h-14 px-4 cursor-pointer">
+                        <i className="fas fa-bars nav-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+        ); }; const ConfessionPost = ({ post, onReaction }) => { return (
+        <div className={`post-card bg-white shadow rounded-lg overflow-hidden border-l-4 ${post.borderClass}`}>
+            <div className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center">
+                        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-2">
+                            <i className="fas fa-user-secret text-gray-500"></i>
+                        </div>
+                        <div>
+                            <span className="font-medium text-gray-800">{post.user}</span>
+                            <div className="text-xs text-gray-500">{post.time}</div>
+                        </div>
+                    </div>
+                    <div className="timer-section flex items-center">
+                        <i className="fas fa-clock mr-1"></i>
+                        <span>Expires in {post.expiresIn}</span>
+                    </div>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">{post.title}</h3>
+                <p className="text-gray-600 mb-3">{post.content}</p>
+                <div className="flex flex-wrap gap-2 mb-4">
+                    {post.categories.map((category, index) => (
+                    <span key={index} className={`category-pill ${category.bgClass} ${category.textClass}`}>
+                                    {category.label}
+                                </span> ))}
+                </div>
+                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                    <div className="flex space-x-1 w-full">
+                        <button className={`reaction-btn ${post.liked ? 'like-active' : ''}`} onClick={()=> onReaction(post.id, 'like')}>
+                                    <i className="fas fa-heart mr-1"></i>
+                                    <span>{post.reactions.likes}</span>
+                                </button>
+                        <button className={`reaction-btn ${post.supported ? 'support-active' : ''}`} onClick={()=> onReaction(post.id, 'support')}>
+                                    <i className="fas fa-hands-helping mr-1"></i>
+                                    <span>{post.reactions.supports}</span>
+                                </button>
+                        <button className="reaction-btn">
+                                    <i className="fas fa-comment mr-1"></i>
+                                    <span>{post.reactions.comments}</span>
+                                </button>
+                        <button className={`reaction-btn ml-auto ${post.bookmarked ? 'bookmark-active' : ''}`} onClick={()=> onReaction(post.id, 'bookmark')}>
+                                    <i className="fas fa-bookmark"></i>
+                                </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        ); }; const App = () => { const [posts, setPosts] = React.useState([ { id: 1, user: 'User_3D2F', time: '1 day ago', title: "I came out to my parents and it didn't go as expected...", content: "After years of hiding, I finally came out to my parents last
+        weekend. I expected anger or disappointment, but they just hugged me and said they already knew. I feel relieved but also confused about why I spent so many years afraid. Anyone else experience something similar?", categories: [ { label: 'LGBTQ+
+        Space', bgClass: 'bg-pink-100', textClass: 'text-pink-700' }, { label: 'Family Issues', bgClass: 'bg-orange-100', textClass: 'text-orange-700' }, { label: '#ComingOut', bgClass: 'bg-gray-100', textClass: 'text-gray-700' } ], reactions: { likes:
+        86, supports: 54, comments: 19 }, expiresIn: '6 days', borderClass: 'border-primary', liked: false, supported: false, bookmarked: true }, { id: 2, user: 'User_5T9X', time: '12 hours ago', title: "I don't know how to tell my partner I'm struggling
+        with anxiety...", content: "I've been dealing with anxiety for years but have never told my partner. They've noticed I'm acting different lately, but I don't know how to open up about it. I'm afraid they'll think I'm too much to handle or they'll
+        see me differently...", categories: [ { label: 'Mental Health', bgClass: 'bg-blue-100', textClass: 'text-blue-700' }, { label: 'Relationships', bgClass: 'bg-purple-100', textClass: 'text-purple-700' }, { label: '#Anxiety', bgClass: 'bg-gray-100',
+        textClass: 'text-gray-700' } ], reactions: { likes: 24, supports: 18, comments: 7 }, expiresIn: '23 hours', borderClass: 'border-tertiary', liked: false, supported: false, bookmarked: false } ]); const [filter, setFilter] = React.useState('All');
+        const [searchTerm, setSearchTerm] = React.useState(''); const handleFilterChange = (newFilter) => { setFilter(newFilter); }; const handleSearch = (e) => { setSearchTerm(e.target.value); }; const handleReaction = (postId, reactionType) => { setPosts(posts.map(post
+        => { if (post.id === postId) { const updatedReactions = { ...post.reactions }; if (reactionType === 'like') { updatedReactions.likes = post.liked ? updatedReactions.likes - 1 : updatedReactions.likes + 1; return { ...post, reactions: updatedReactions,
+        liked: !post.liked }; } else if (reactionType === 'support') { updatedReactions.supports = post.supported ? updatedReactions.supports - 1 : updatedReactions.supports + 1; return { ...post, reactions: updatedReactions, supported: !post.supported
+        }; } else if (reactionType === 'bookmark') { return { ...post, bookmarked: !post.bookmarked }; } } return post; })); }; const filteredPosts = posts.filter(post => (filter === 'All' || post.categories.some(cat => cat.label === filter)) && (searchTerm
+        === '' || post.title.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())) ); return (
+        <div>
+            <Header />
+            <div className="container mx-auto px-4 py-4 mt-4 flex">
+                {/* Left Sidebar */}
+                <div className="sidebar w-1/4 mr-4 hidden md:block">
+                    <div className="sticky top-20">
+                        <div className="sidebar-item">
+                            <div className="sidebar-icon bg-blue-100">
+                                <i className="fas fa-user text-blue-500"></i>
+                            </div>
+                            <span className="font-medium">Your Profile</span>
+                        </div>
+                        <div className="sidebar-item">
+                            <div className="sidebar-icon bg-purple-100">
+                                <i className="fas fa-heart text-purple-500"></i>
+                            </div>
+                            <span className="font-medium">Mental Health</span>
+                        </div>
+                        <div className="sidebar-item">
+                            <div className="sidebar-icon bg-pink-100">
+                                <i className="fas fa-users text-pink-500"></i>
+                            </div>
+                            <span className="font-medium">Relationships</span>
+                        </div>
+                        {/* Add more sidebar items */}
+                    </div>
+                </div>
+                {/* Main Content */}
+                <div className="main-feed w-full md:w-2/4">
+                    {/* Filters & Search */}
+                    <div className="bg-white rounded-lg shadow p-4 mb-4">
+                        <div className="flex flex-wrap gap-2 mb-3 md:mb-0 overflow-x-auto pb-2">
+                            {['All', 'Mental Health', 'Relationships', 'Career Stress', 'Family Issues', 'LGBTQ+ Space'].map(f => (
+                            <button key={f} className={`btn-filter px-3 py-1 rounded-full text-sm font-medium border transition ${filter===f ? 'active' : 'border-gray-300 text-gray-700 hover:bg-gray-100'}`} onClick={()=> handleFilterChange(f)}
+                                        >
+                                            {f}
+                                        </button> ))}
+                        </div>
+                        <div className="relative mt-3">
+                            <input type="text" placeholder="Search confessions..." className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" value={searchTerm} onChange={handleSearch} />
+                            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                <i className="fas fa-search"></i>
+                            </div>
+                        </div>
+                    </div>
+                    {/* Confession Posts */}
+                    <div className="space-y-4">
+                        {filteredPosts.map(post => (
+                        <ConfessionPost key={post.id} post={post} onReaction={handleReaction} /> ))}
+                    </div>
+                    <div className="mt-6 text-center">
+                        <button className="bg-blue-500 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition shadow-md hover:shadow-lg w-full md:w-auto">
+                                    See More Confessions
+                                </button>
+                    </div>
+                </div>
+                {/* Right Sidebar */}
+                <div className="sidebar w-1/4 ml-4 hidden md:block">
+                    <div className="sticky top-20">
+                        <div className="bg-white rounded-lg shadow p-4 mb-4">
+                            <h3 className="font-bold text-gray-800 mb-2">Crisis Support</h3>
+                            <div className="bg-red-50 p-3 rounded-lg border border-red-100 mb-3">
+                                <h4 className="font-semibold text-red-700">Crisis Support</h4>
+                                <p className="text-sm text-gray-700">24/7 Hotline: 1-800-273-8255</p>
+                            </div>
+                            {/* Add more support items */}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        ); }; ReactDOM.render(
+
+        <App />, document.getElementById('root'));
+    </script>
+</body>
+
+</html>

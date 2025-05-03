@@ -1,0 +1,129 @@
+:root {
+    --primary: #0066CC;
+    --secondary: #FFAD03;
+    --tertiary: #FD9148;
+    --light: #ffffff;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    background-color: #f9fafb;
+}
+
+.bg-primary {
+    background-color: var(--primary);
+}
+
+.bg-secondary {
+    background-color: var(--secondary);
+}
+
+.bg-tertiary {
+    background-color: var(--tertiary);
+}
+
+.text-primary {
+    color: var(--primary);
+}
+
+.text-secondary {
+    color: var(--secondary);
+}
+
+.text-tertiary {
+    color: var(--tertiary);
+}
+
+.border-primary {
+    border-color: var(--primary);
+}
+
+.border-secondary {
+    border-color: var(--secondary);
+}
+
+.border-tertiary {
+    border-color: var(--tertiary);
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0055aa;
+}
+
+.btn-secondary {
+    background-color: var(--secondary);
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #e89d00;
+}
+
+.btn-tertiary {
+    background-color: var(--tertiary);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-tertiary:hover {
+    background-color: #ec8030;
+}
+
+.resource-card {
+    transition: all 0.3s ease;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.resource-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.category-tab {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.category-tab.active {
+    border-bottom: 3px solid var(--tertiary);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.category-tab:hover:not(.active) {
+    border-bottom: 3px solid var(--secondary);
+    color: var(--tertiary);
+}
+
+.emergency-banner {
+    background: linear-gradient(to right, #ff3b30, #ff9500);
+    color: white;
+}
+
+.hotline-card {
+    border-left: 4px solid var(--tertiary);
+}
+
+.recommendation-card {
+    background: linear-gradient(135deg, var(--primary) 0%, #1a7be0 100%);
+    color: white;
+}
+
+.gradient-heading {
+    background: linear-gradient(to right, var(--primary), var(--tertiary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+}
