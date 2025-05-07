@@ -127,3 +127,11 @@ body {
     background-clip: text;
     display: inline-block;
 }
+
+.gradient-heading {
+    background: linear-gradient(to right, var(--primary), var(--tertiary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+}
