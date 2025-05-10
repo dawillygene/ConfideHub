@@ -4,6 +4,7 @@ import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
 import ConfessMain from './components/Confession/ConfessMain';
 import Resources from './components/Resources/ResourcesHome';
+import Feeds from './feeds/feeds';
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" />
+          <Route path="/feed" element={<Feeds />}/>
           <Route path="/confessions" element={<ConfessMain />}  />
           <Route path="/categories"  />
           <Route path="/resources" element={<Resources />}  />
