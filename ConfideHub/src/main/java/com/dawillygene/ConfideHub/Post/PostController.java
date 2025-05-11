@@ -1,6 +1,6 @@
 package com.dawillygene.ConfideHub.Post;
 
-import com.dawillygene.ConfideHub.User.User;
+import com.dawillygene.ConfideHub.User.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,8 +21,8 @@ public class PostController {
     public ResponseEntity<Post> createPost(@RequestParam("file") MultipartFile file,
                                            @RequestParam("content") String content) {
         // Assume authenticated user is passed (e.g., via SecurityContext)
-        User user = getAuthenticatedUser(); // Placeholder for actual auth logic
-        Post post = (Post) postService.createPost(content, file, user);
+        Users users = getAuthenticatedUser(); // Placeholder for actual auth logic
+        Post post = (Post) postService.createPost(content, file, users);
         return ResponseEntity.status(HttpStatus.CREATED).body(post);
     }
 
@@ -33,9 +33,9 @@ public class PostController {
         return ResponseEntity.ok(posts.getContent());
     }
 
-    private User getAuthenticatedUser() {
+    private Users getAuthenticatedUser() {
         // Placeholder: Implement actual authentication logic
-        return new User();
+        return new Users();
     }
 
 }

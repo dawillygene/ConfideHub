@@ -1,7 +1,7 @@
 package com.dawillygene.ConfideHub.Post;
 
 import com.dawillygene.ConfideHub.Storage.FileStorageService;
-import com.dawillygene.ConfideHub.User.User;
+import com.dawillygene.ConfideHub.User.Users;
 import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -17,12 +17,12 @@ public class PostService {
     @Autowired
     private FileStorageService fileStorageService;
 
-    public JpaRepository<Post, Long> createPost(String content, MultipartFile file, User user){
+    public JpaRepository<Post, Long> createPost(String content, MultipartFile file, Users users){
         String fileName = fileStorageService.storeFile(file);
         Post post = new Post();
         post.setContent(content);
         post.setMediaUrl(fileName);
-        post.setUser(user);
+        post.setUser(users);
         return postRepository;
     }
 

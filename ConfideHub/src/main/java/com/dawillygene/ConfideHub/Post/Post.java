@@ -1,6 +1,6 @@
 package com.dawillygene.ConfideHub.Post;
 
-import com.dawillygene.ConfideHub.User.User;
+import com.dawillygene.ConfideHub.User.Users;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -13,7 +13,7 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private Users users;
 
     String content;
     String mediaUrl;
@@ -28,12 +28,12 @@ public class Post {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public Users getUser() {
+        return users;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(Users users) {
+        this.users = users;
     }
 
     public String getContent() {
