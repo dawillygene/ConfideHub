@@ -10,7 +10,7 @@ export default function AppProvider({ children }) {
   const getUser = async () => {
     try {
       const res = await fetch('http://localhost:8080/api/auth/user', {
-        method: 'GET', // Explicitly use GET
+        method: 'GET', 
         headers: {
           'Content-Type': 'application/json',
         },

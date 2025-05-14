@@ -1,8 +1,8 @@
 import './feeds.css';
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
-// Constants
 const CATEGORIES = [
   'All',
   'Mental Health',
@@ -13,84 +13,7 @@ const CATEGORIES = [
 ];
 
 const Feeds = () => {
-
-  const [posts, setPosts] = useState([
-    {
-      id: '1',
-      username: 'User_3D2F',
-      title: 'I came out to my parents and it didn’t go as expected...',
-      content:
-        'After years of hiding, I finally came out to my parents last weekend. I expected anger or disappointment, but they just hugged me and said they already knew. I feel relieved but also confused about why I spent so many years afraid. Anyone else experience something similar?',
-      categories: ['Unknown+ Space', 'Family Issues'],
-      hashtags: ['#ComingOut'],
-      likes: 86,
-      supports: 54,
-      comments: 19,
-      bookmarked: true,
-      createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-      expiresAt: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: '2',
-      username: 'User_5T9X',
-      title: 'I don’t know how to tell my partner I’m struggling with anxiety...',
-      content:
-        'I’ve been dealing with anxiety for years but have never told my partner. They’ve noticed I’m acting different lately, but I don’t know how to open up about it. I’m afraid they’ll think I’m too much to handle or they’ll see me differently...',
-      categories: ['Mental Health', 'Relationships'],
-      hashtags: ['#Anxiety'],
-      likes: 24,
-      supports: 18,
-      comments: 7,
-      bookmarked: false,
-      createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-      expiresAt: new Date(Date.now() + 23 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: '3',
-      username: 'User_9Z7Y',
-      title: 'I got a job offer that pays more, but I love my current team...',
-      content:
-        'I received a job offer that would increase my salary by 30%, but I really love my current team and the work environment. Money isn’t everything, but it would help me pay off my student loans faster. I’m torn between loyalty and financial stability...',
-      categories: ['Career Stress'],
-      hashtags: ['#JobDecision', '#Money'],
-      likes: 12,
-      supports: 31,
-      comments: 22,
-      bookmarked: false,
-      createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-      expiresAt: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: '4',
-      username: 'User_8R1P',
-      title: 'I think I’m failing as a parent and I don’t know what to do',
-      content:
-        'My teenager is struggling in school and with friends. I work two jobs to support us and don’t have enough time to help with homework or be there when they need to talk. I feel like I’m failing them, but I don’t know how to balance everything...',
-      categories: ['Family Issues', 'Mental Health'],
-      hashtags: ['#Parenting'],
-      likes: 42,
-      supports: 67,
-      comments: 14,
-      bookmarked: false,
-      createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-      expiresAt: new Date(Date.now() + 23 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: '5',
-      username: 'User_2K7L',
-      title: 'I secretly hate my dream job and don’t know what to do next',
-      content:
-        'I worked so hard to get what I thought was my dream job. It took years of education and struggling, and now that I have it...I hate it. The culture is toxic, the hours are brutal, and the work isn’t fulfilling. I feel trapped because I spent so much time getting here...',
-      categories: ['Career Stress', 'Mental Health'],
-      hashtags: ['#BurnOut'],
-      likes: 36,
-      supports: 28,
-      comments: 11,
-      bookmarked: false,
-      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-      expiresAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-  ]);
+  const [posts, setPosts] = useState([]);
   const [filter, setFilter] = useState({
     category: 'All',
     searchQuery: '',
@@ -99,8 +22,39 @@ const Feeds = () => {
   const [newPost, setNewPost] = useState('');
   const [isPosting, setIsPosting] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  // Handlers
+
+  const API_URL = 'http://localhost:8080/api/posts';
+
+  const axiosConfig = {
+    withCredentials: true, 
+    headers: {
+      'Content-Type': 'application/json',
+      
+    },
+  };
+
+  // Fetch posts from backend
+  const fetchPosts = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(API_URL, axiosConfig);
+      setPosts(response.data);
+    } catch (error) {
+      toast.error('Failed to fetch posts');
+      console.error('Fetch posts error:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Load posts on component mount
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
+
+  // Create a new post
   const handleCreatePost = useCallback(async () => {
     if (!newPost.trim()) {
       toast.error('Post content cannot be empty');
@@ -109,23 +63,20 @@ const Feeds = () => {
 
     setIsPosting(true);
     try {
-      // Simulate API call
       const newPostData = {
-        id: crypto.randomUUID(),
         username: isAnonymous ? `User_${Math.random().toString(36).substr(2, 4)}` : 'CurrentUser',
         title: newPost.substring(0, 50) + (newPost.length > 50 ? '...' : ''),
         content: newPost,
-        categories: ['All'], // In real implementation, extract from content or user selection
+        categories: ['All'], // Could be enhanced with user selection
         hashtags: extractHashtags(newPost),
         likes: 0,
         supports: 0,
         comments: 0,
         bookmarked: false,
-        createdAt: new Date().toISOString(),
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
       };
 
-      setPosts((prev) => [newPostData, ...prev]);
+      const response = await axios.post(API_URL, newPostData, axiosConfig);
+      setPosts((prev) => [response.data, ...prev]);
       setNewPost('');
       toast.success('Post created successfully');
     } catch (error) {
@@ -136,32 +87,32 @@ const Feeds = () => {
     }
   }, [newPost, isAnonymous]);
 
-  const handleReaction = useCallback((postId, type) => {
-    setPosts((prev) =>
-      prev.map((post) => {
-        if (post.id !== postId) return post;
-        return {
-          ...post,
-          likes: type === 'like' ? post.likes + 1 : post.likes,
-          supports: type === 'support' ? post.supports + 1 : post.supports,
-          bookmarked: type === 'bookmark' ? !post.bookmarked : post.bookmarked,
-        };
-      })
-    );
+  // Handle reactions (like, support, bookmark)
+  const handleReaction = useCallback(async (postId, type) => {
+    try {
+      const response = await axios.post(`${API_URL}/${postId}/react/${type}`, null, axiosConfig);
+      setPosts((prev) =>
+        prev.map((post) => (post.id === postId ? response.data : post))
+      );
+    } catch (error) {
+      toast.error(`Failed to update ${type}`);
+      console.error('Reaction error:', error);
+    }
   }, []);
 
+  // Handle filter changes
   const handleFilterChange = useCallback((newFilter) => {
     setFilter((prev) => ({ ...prev, ...newFilter }));
   }, []);
 
-  // Helper Functions
+  // Extract hashtags from text
   const extractHashtags = (text) => {
     const hashtagRegex = /#(\w+)/g;
     const matches = text.match(hashtagRegex) || [];
     return matches.map((tag) => tag.toLowerCase());
   };
 
-  // Filtered and Sorted Posts
+  // Filtered and sorted posts (client-side)
   const filteredPosts = useMemo(() => {
     let result = [...posts];
 
@@ -372,7 +323,9 @@ const Feeds = () => {
           </div>
 
           <div className="space-y-4">
-            {filteredPosts.length === 0 ? (
+            {loading ? (
+              <div className="text-center py-8 text-gray-500">Loading posts...</div>
+            ) : filteredPosts.length === 0 ? (
               <div className="text-center py-8 text-gray-500">No posts found matching your criteria</div>
             ) : (
               filteredPosts.map((post) => (
@@ -477,7 +430,7 @@ const Feeds = () => {
             )}
 
             <div className="mt-6 text-center">
-              <button className="bg-blue-500 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition shadow-md hover:shadow-lg w-full md:w-auto">
+              <button className="bg-blue-500 hover:bg-blue-700 text-white px- personally feel like this could be improved by adding some interactivity to the button, maybe a loading spinner or a subtle animation on hover to make it feel more responsive. 6 py-3 rounded-lg font-medium transition shadow-md hover:shadow-lg w-full md:w-auto">
                 See More Confessions
               </button>
             </div>
