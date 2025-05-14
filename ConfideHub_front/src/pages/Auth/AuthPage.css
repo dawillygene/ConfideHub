@@ -1,0 +1,59 @@
+.bg-primary {
+    background-color: #0066CC;
+}
+
+.bg-secondary {
+    background-color: #FFAD03;
+}
+
+.bg-tertiary {
+    background-color: #FD9148;
+}
+
+.text-primary {
+    color: #0066CC;
+}
+
+.text-secondary {
+    color: #FFAD03;
+}
+
+.text-tertiary {
+    color: #FD9148;
+}
+
+.border-primary {
+    border-color: #0066CC;
+}
+
+.border-secondary {
+    border-color: #FFAD03;
+}
+
+.border-tertiary {
+    border-color: #FD9148;
+}
+
+.hover\:bg-primary-dark:hover {
+    background-color: #0052a3;
+}
+
+.hover\:bg-secondary-dark:hover {
+    background-color: #e69c00;
+}
+
+.hover\:bg-tertiary-dark:hover {
+    background-color: #e77f3d;
+}
+
+.focus\:ring-primary:focus {
+    --tw-ring-color: rgba(0, 102, 204, 0.5);
+}
+
+.focus\:border-primary:focus {
+    border-color: #0066CC;
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}
