@@ -1,28 +1,24 @@
 package com.dawillygene.ConfideHubs.jwt;
 
-import com.dawillygene.ConfideHubs.exception.exception.ErrorMessage;
-import com.dawillygene.ConfideHubs.exception.exception.TokenValidationException;
-import com.dawillygene.ConfideHubs.service.UserDetailsServiceImpl;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.io.IOException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.dawillygene.ConfideHubs.jwt.JwtUtils; // Your JwtUtils
+import jakarta.servlet.http.Cookie;
+import java.util.Arrays;
+import java.util.Optional;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
 
@@ -30,59 +26,51 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private JwtUtils jwtUtils;
 
     @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private UserDetailsService userDetailsService;
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
-            String jwt = parseJwt(request);
+            logger.info("AuthTokenFilter: doFilterInternal() called for URL: {}", request.getRequestURL());
+            String jwt = parseJwt(request); // Get the JWT from the cookie
+            if (jwt != null) {
+                logger.info("AuthTokenFilter: JWT found in cookie: {}", jwt);
+                if (jwtUtils.validateJwtToken(jwt)) { // Validate the JWT
+                    logger.info("AuthTokenFilter: JWT is valid");
+                    String username = jwtUtils.getUsernameFromJwtToken(jwt); // Extract username
 
-            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                String username = jwtUtils.getUserNameFromJwtToken(jwt);
-
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userDetails,
-                                null,
-                                userDetails.getAuthorities());
-
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username); // Load user details
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities()); // Create Authentication object
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication); // Set in SecurityContext
+                    logger.info("AuthTokenFilter: Authentication set for user: {}", username);
+                } else {
+                    logger.warn("AuthTokenFilter: JWT is invalid");
+                }
+            } else {
+                logger.info("AuthTokenFilter: JWT not found in cookie");
             }
-        } catch (TokenValidationException e) {
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-
-            ErrorMessage body = new ErrorMessage(
-                    HttpStatus.UNAUTHORIZED.value(),
-                    new Date(),
-                    e.getMessage(),
-                    String.format("uri=%s", request.getRequestURI())
-            );
-
-            final ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule());
-            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            mapper.setDateFormat(dateFormat);
-
-            mapper.writeValue(response.getOutputStream(), body);
-            return;
+        } catch (Exception e) {
+            logger.error("AuthTokenFilter: Cannot set user authentication: {}", e);
         }
 
         filterChain.doFilter(request, response);
     }
 
     private String parseJwt(HttpServletRequest request) {
-        String headerAuth = request.getHeader("Authorization");
-
-        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7);
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("accessToken".equals(cookie.getName())) {
+                    logger.info("AuthTokenFilter: Found accessToken cookie");
+                    return cookie.getValue(); // Return the value of the accessToken cookie
+                }
+            }
         }
-
         return null;
     }
 }

@@ -1,28 +1,13 @@
 package com.dawillygene.ConfideHubs.controllers;
 
-
-
-import com.dawillygene.ConfideHubs.data.ERole;
-import com.dawillygene.ConfideHubs.data.RefreshToken;
-import com.dawillygene.ConfideHubs.exception.exception.SignInException;
-import com.dawillygene.ConfideHubs.exception.exception.TokenRefreshException;
-import com.dawillygene.ConfideHubs.model.Role;
-import com.dawillygene.ConfideHubs.model.User;
 import com.dawillygene.ConfideHubs.payload.response.JwtResponse;
-import com.dawillygene.ConfideHubs.payload.response.MessageResponse;
-import com.dawillygene.ConfideHubs.jwt.JwtUtils;
-import com.dawillygene.ConfideHubs.payload.response.TokenRefreshResponse;
 import com.dawillygene.ConfideHubs.repository.RoleRepository;
 import com.dawillygene.ConfideHubs.repository.UserRepository;
-import com.dawillygene.ConfideHubs.service.RefreshTokenService;
-
-import com.dawillygene.ConfideHubs.payload.request.SignupRequest;
-import com.dawillygene.ConfideHubs.payload.request.LoginRequest;
-import com.dawillygene.ConfideHubs.payload.request.TokenRefreshRequest;
-
-
-import com.dawillygene.ConfideHubs.service.UserDetailsImpl;
-import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,11 +18,29 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
+import jakarta.servlet.http.HttpServletResponse; // Import HttpServletResponse
+import jakarta.servlet.http.Cookie;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import com.dawillygene.ConfideHubs.data.ERole;
+import com.dawillygene.ConfideHubs.data.RefreshToken;
+import com.dawillygene.ConfideHubs.exception.exception.SignInException;
+import com.dawillygene.ConfideHubs.exception.exception.TokenRefreshException;
+import com.dawillygene.ConfideHubs.model.Role;
+import com.dawillygene.ConfideHubs.model.User;
+import com.dawillygene.ConfideHubs.payload.request.LoginRequest;
+import com.dawillygene.ConfideHubs.payload.request.SignupRequest;
+import com.dawillygene.ConfideHubs.payload.request.TokenRefreshRequest;
+import com.dawillygene.ConfideHubs.payload.response.MessageResponse;
+import com.dawillygene.ConfideHubs.payload.response.TokenRefreshResponse;
+import com.dawillygene.ConfideHubs.jwt.JwtUtils;
+import com.dawillygene.ConfideHubs.service.RefreshTokenService;
+import com.dawillygene.ConfideHubs.service.UserDetailsImpl;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails; //Added
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -62,8 +65,14 @@ public class AuthController {
     @Autowired
     RefreshTokenService refreshTokenService;
 
+    @Value("${spring.app.jwtExpirationMs}") //added
+    private int jwtExpirationMs;
+
+    @Value("${spring.app.jwtRefreshExpirationMs}") //added
+    private int jwtRefreshExpirationMs;
+
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest, HttpServletResponse response) { // Added HttpServletResponse
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
         }
@@ -100,54 +109,112 @@ public class AuthController {
         user.setRoles(roles);
         userRepository.save(user);
 
+        // Generate tokens
+        String accessToken = jwtUtils.generateTokenFromUsername(user.getUsername());
+        String refreshToken = refreshTokenService.createRefreshToken(user.getId()).getToken();
+
+        // Set cookies
+        CookieUtils.setHttpOnlyCookie(response, "accessToken", accessToken, jwtExpirationMs / 1000, false); // convert to seconds
+        CookieUtils.setHttpOnlyCookie(response, "refreshToken", refreshToken, jwtRefreshExpirationMs / 1000, false);
+
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) { // Added HttpServletResponse
         try {
-
             Authentication authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            String jwt = jwtUtils.generateJwtToken(authentication);
-
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            String accessToken = jwtUtils.generateJwtToken(authentication);  //changed
+            String refreshToken = refreshTokenService.createRefreshToken(userDetails.getId()).getToken(); //changed
+
             List<String> roles = userDetails.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
                     .collect(Collectors.toList());
 
-            RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+            // Set access token as HTTP-only cookie
+            CookieUtils.setHttpOnlyCookie(response, "accessToken", accessToken, jwtExpirationMs / 1000, false); //convert to seconds
+            // Set refresh token as HTTP-only cookie
+            CookieUtils.setHttpOnlyCookie(response, "refreshToken", refreshToken, jwtRefreshExpirationMs / 1000, false);
 
-            return ResponseEntity.ok(new JwtResponse(
-                    jwt,
-                    refreshToken.getToken(),
-                    userDetails.getId(),
-                    userDetails.getUsername(),
-                    userDetails.getEmail(),
-                    roles));
+            return ResponseEntity.ok(new JwtResponse(null, null, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles)); // Changed:  Don't return tokens in body
+
         } catch (AuthenticationException exception) {
             throw new SignInException(exception.getMessage());
         }
-
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<?> refreshToken(@Valid @RequestBody TokenRefreshRequest request) {
-        String requestRefreshToken = request.getRefreshToken();
-
+    public ResponseEntity<?> refreshToken(@CookieValue("refreshToken") String requestRefreshToken, HttpServletResponse response) { //changed
         return refreshTokenService.findByToken(requestRefreshToken)
                 .map(refreshTokenService::verifyExpiration)
                 .map(RefreshToken::getUser)
                 .map(user -> {
-                    String token = jwtUtils.generateTokenFromUsername(user.getUsername());
-                    return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+                    String newAccessToken = jwtUtils.generateTokenFromUsername(user.getUsername());
+                    // Set the new access token in a cookie
+                    CookieUtils.setHttpOnlyCookie(response, "accessToken", newAccessToken, jwtExpirationMs / 1000, false);
+                    return ResponseEntity.ok(new TokenRefreshResponse(newAccessToken, requestRefreshToken)); // Return the new access token
                 })
-                .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
-                        "Refresh token is not in database!"));
+                .orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!"));
     }
 
+    @PostMapping("/logout") //added
+    public ResponseEntity<?> logoutUser(HttpServletResponse response) {
+        // Clear the cookies
+        CookieUtils.clearHttpOnlyCookie(response, "accessToken");
+        CookieUtils.clearHttpOnlyCookie(response, "refreshToken");
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok(new MessageResponse("Logged out successfully!"));
+    }
+    
+
+    @GetMapping("/user")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getUserDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body(new MessageResponse("Unauthorized: User not authenticated.")); // Explicit 401
+        }
+
+        //The principal should be of type UserDetails
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            // Construct a response with the user details.  Do NOT include the password.
+            return ResponseEntity.ok(new JwtResponse(null, null, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), userDetails.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList())));
+        }
+        else if (authentication.getPrincipal() instanceof String){
+            return ResponseEntity.ok(new MessageResponse(authentication.getPrincipal().toString()));
+        }
+        else{
+            return ResponseEntity.status(400).body(new MessageResponse("Bad Request:  Invalid principal type."));
+        }
+
+    }
+
+    //Utility class
+    static class CookieUtils {
+        public static void setHttpOnlyCookie(HttpServletResponse response, String name, String value, int maxAge, boolean secure) {
+            Cookie cookie = new Cookie(name, value);
+            cookie.setHttpOnly(true);
+            cookie.setMaxAge(maxAge);
+            cookie.setPath("/");
+            cookie.setSecure(secure);
+            response.addCookie(cookie);
+        }
+
+        public static void clearHttpOnlyCookie(HttpServletResponse response, String name) {
+            Cookie cookie = new Cookie(name, "");
+            cookie.setHttpOnly(true);
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            cookie.setSecure(false);
+            response.addCookie(cookie);
+        }
+    }
 }
