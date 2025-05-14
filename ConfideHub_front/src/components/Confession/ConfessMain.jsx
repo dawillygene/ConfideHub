@@ -40,7 +40,7 @@ const ConfessMain = () => {
       expires: '6 days',
       title: 'I came out to my parents and it didn’t go as expected...',
       content: 'After years of hiding, I finally came out to my parents last weekend. I expected anger or disappointment, but they just hugged me and said they already knew. I feel relieved but also confused about why I spent so many years afraid. Anyone else experience something similar?',
-      categories: ['LGBTQ+ Space', 'Family Issues', '#ComingOut'],
+      categories: ['invalid+ Space', 'Family Issues', '#ComingOut'],
       likes: 86,
       support: 54,
       comments: 19,
@@ -83,7 +83,7 @@ const ConfessMain = () => {
     'Relationships',
     'Career Stress',
     'Family Issues',
-    'LGBTQ+ Space'
+    'invalid+ Space'
   ];
 
   const handleFilterClick = (filter) => {
@@ -224,7 +224,7 @@ const ConfessMain = () => {
                             'Relationships': 'bg-purple-100 text-purple-700',
                             'Career Stress': 'bg-green-100 text-green-700',
                             'Family Issues': 'bg-orange-100 text-orange-700',
-                            'LGBTQ+ Space': 'bg-pink-100 text-pink-700'
+                            'invalid+ Space': 'bg-pink-100 text-pink-700'
                           }[category] || 'bg-gray-100 text-gray-700'
                     }`}
                   >
@@ -298,7 +298,7 @@ const ConfessMain = () => {
             <p className="text-sm text-gray-700 mt-1">Text HOME to 741741</p>
           </div>
           <div className="bg-purple-50 p-4 rounded-lg border border-purple-100">
-            <h4 className="font-semibold text-purple-700">LGBTQ+ Support</h4>
+            <h4 className="font-semibold text-purple-700">invalid+ Support</h4>
             <p className="text-sm text-gray-700 mt-1">Call: 1-866-488-7386</p>
           </div>
         </div>

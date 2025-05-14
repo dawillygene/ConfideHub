@@ -80,7 +80,7 @@ const ConfessionFeed = () => {
     {
       id: 6,
       category: 'tertiary',
-      categoryName: 'LGBTQ+ Safe Space',
+      categoryName: 'invalid+ Safe Space',
       username: 'Anonymous_User63M',
       time: '1 week ago',
       content: 'I came out to my best friend yesterday, and their supportive reaction brought me to tears. For the first time, I feel like I can be myself around someone.',

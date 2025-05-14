@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { AppContext } from '../../Context/AppProvider';
 
 const AuthPage = () => {
   const [loginError, setLoginError] = useState('');
   const [registerError, setRegisterError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('login');
+  const navigate = useNavigate();
+  const { setUser } = useContext(AppContext);
   const [formData, setFormData] = useState({
     login: { username: '', password: '', remember: false },
     register: { username: '', email: '', password: '', confirmPassword: '', terms: false }
@@ -21,32 +25,31 @@ const AuthPage = () => {
     register: { username: '', email: '', password: '', confirmPassword: '', terms: '' }
   });
 
-  // Color scheme from your requirements
   const colors = {
-    primary: '#0066CC',    // Blue
-    secondary: '#FFAD03',  // Amber/Gold
-    accent: '#FD9148',     // Orange
-    white: '#FFFFFF'       // White
+    primary: '#0066CC',
+    secondary: '#FFAD03',
+    accent: '#FD9148',
+    white: '#FFFFFF'
   };
 
   // Password strength checker
   useEffect(() => {
     if (formData.register.password) {
       let strength = 0;
-      
+
       // Length check
       if (formData.register.password.length >= 8) strength += 1;
-      
+
       // Contains number
       if (/\d/.test(formData.register.password)) strength += 1;
-      
+
       // Contains special character
       if (/[!@#$%^&*(),.?":{}|<>]/.test(formData.register.password)) strength += 1;
-      
+
       // Contains uppercase and lowercase
-      if (/[a-z]/.test(formData.register.password) && 
-          /[A-Z]/.test(formData.register.password)) strength += 1;
-      
+      if (/[a-z]/.test(formData.register.password) &&
+        /[A-Z]/.test(formData.register.password)) strength += 1;
+
       setPasswordStrength(strength);
     } else {
       setPasswordStrength(0);
@@ -62,7 +65,7 @@ const AuthPage = () => {
       }
     }));
 
-    // Clear error when typing
+
     if (errors[formType][field]) {
       setErrors(prev => ({
         ...prev,
@@ -101,12 +104,12 @@ const AuthPage = () => {
   };
 
   const validateRegisterForm = () => {
-    const newErrors = { 
-      username: '', 
-      email: '', 
-      password: '', 
-      confirmPassword: '', 
-      terms: '' 
+    const newErrors = {
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      terms: ''
     };
     let isValid = true;
 
@@ -152,30 +155,39 @@ const AuthPage = () => {
     return isValid;
   };
 
+
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    if (isLoggedIn) {
+        navigate('/feed');
+    }
+}, [navigate]);
+
+
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setLoginError('');
     setIsLoading(true);
-  
+
     if (validateLoginForm()) {
       try {
-        const response = await fetch('api/users/login', {
+        const response = await fetch('api/auth/signin', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(formData.login),
+          credentials: 'include',
         });
-  
-        const token = await response.text();
-  
+
+        const data = await response.json();
+        console.log(data);
         if (!response.ok) {
-          throw new Error(token || 'Login failed');
+          throw new Error(data.message || 'Login failed');
         }
-  
-        localStorage.setItem('token', token);
-        console.log('Login successful, token:', token);
-        alert('Login successful!');
+        setUser(data.username);
+        localStorage.setItem('isLoggedIn', 'true');
+        navigate('/feed');
       } catch (error) {
         setLoginError(error.message);
         console.error('Login error:', error);
@@ -187,6 +199,7 @@ const AuthPage = () => {
     }
   };
 
+  //  Register Submit
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     setRegisterError('');
@@ -207,9 +220,6 @@ const AuthPage = () => {
         if (!response.ok) {
           throw new Error(data.message || 'Registration failed');
         }
-
-        console.log('Registration successful:', data);
-        alert('Registration successful!');
         setActiveTab('login');
       } catch (error) {
         setRegisterError(error.message);
@@ -699,14 +709,6 @@ const AuthPage = () => {
             )}
           </AnimatePresence>
         </div>
-
-        <div>
-      <h1>Auth Page</h1>
-      <button onClick={() => localStorage.setItem('token', 'dummy-token')}>
-        Login (Set Token)
-      </button>
-    </div>
-
         {/* Footer */}
         <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
