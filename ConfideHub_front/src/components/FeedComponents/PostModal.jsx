@@ -18,9 +18,6 @@ const PostModal = ({
   setIsAnonymous,
   isPosting,
   handleCreatePost,
-  fileInputRef,
-  triggerFileInput,
-  handleImageUpload,
   handlePostDataChange,
 }) => {
   const modalRef = useRef(null);
@@ -98,40 +95,6 @@ const PostModal = ({
                   </option>
                 ))}
               </select>
-            </div>
-            <div className="mb-4">
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleImageUpload}
-                className="hidden"
-                accept="image/*"
-              />
-              {postData.image ? (
-                <div className="relative mt-2 mb-3">
-                  <img
-                    src={URL.createObjectURL(postData.image)}
-                    alt="Upload preview"
-                    className="w-full h-48 object-cover rounded-lg border border-gray-200"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setPostData({ ...postData, image: null })}
-                    className="absolute top-2 right-2 bg-white text-red-500 p-1 rounded-full shadow hover:bg-gray-100"
-                  >
-                    <i className="fas fa-times"></i>
-                  </button>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={triggerFileInput}
-                  className="w-full border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:bg-gray-50 transition"
-                >
-                  <i className="fas fa-image text-gray-400 text-2xl mb-2"></i>
-                  <p className="text-sm text-gray-500">Add a photo to your confession</p>
-                </button>
-              )}
             </div>
             <div className="flex justify-end space-x-3 mt-6">
               <button

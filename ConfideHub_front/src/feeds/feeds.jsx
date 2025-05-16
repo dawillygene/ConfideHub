@@ -32,7 +32,7 @@ const Feeds = () => {
   const [filter, setFilter] = useState({
     category: 'All',
     searchQuery: '',
-    sortBy: 'trending', // Default to trending
+    sortBy: 'trending', 
   });
   const [isPosting, setIsPosting] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(true);
@@ -42,12 +42,10 @@ const Feeds = () => {
     content: '',
     category: 'All',
     hashtags: [],
-    image: null,
   });
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef();
-  const fileInputRef = useRef(null);
 
   const extractHashtags = (text) => {
     const hashtagRegex = /#(\w+)/g;
@@ -84,7 +82,6 @@ const Feeds = () => {
     fetchPosts(0, false);
   }, [fetchPosts, filter.category, filter.searchQuery, filter.sortBy]);
 
-  // Infinite scroll observer
   const lastPostElementRef = useCallback(
     (node) => {
       if (loading || !hasMore) return;
@@ -114,7 +111,7 @@ const Feeds = () => {
       try {
         const hashtags = extractHashtags(postData.content);
         const newPostData = {
-          username: isAnonymous ? `User_${Math.random().toString(36).substr(2, 4)}` : 'CurrentUser',
+          username: isAnonymous ? `vnem_${Math.random().toString(36).substr(2, 4)}` : 'Dambala..',
           title: postData.content.substring(0, 50) + (postData.content.length > 50 ? '...' : ''),
           content: postData.content,
           categories: [postData.category],
@@ -124,18 +121,12 @@ const Feeds = () => {
           comments: 0,
           bookmarked: false,
         };
-        if (postData.image) {
-          const formData = new FormData();
-          formData.append('image', postData.image);
-          formData.append('postData', JSON.stringify(newPostData));
-        }
         const response = await axios.post(API_URL, newPostData, axiosConfig);
         setPosts((prev) => [response.data, ...prev]);
         setPostData({
           content: '',
           category: 'All',
           hashtags: [],
-          image: null,
         });
         setIsModalOpen(false);
         toast.success('Post created successfully');
@@ -146,7 +137,7 @@ const Feeds = () => {
         setIsPosting(false);
       }
     },
-    [postData, isAnonymous]
+    [postData, isAnonymous, extractHashtags]
   );
 
   const handleReaction = useCallback(async (postId, type) => {
@@ -167,32 +158,25 @@ const Feeds = () => {
   }, []);
 
   const filteredPosts = useMemo(() => {
+    console.log('Computing filteredPosts, posts length:', posts.length, 'filter:', filter);
     let result = [...posts];
+
     if (filter.category !== 'All') {
-      result = result.filter((post) => post.categories.includes(filter.category));
+      result = result.filter((post) => {
+        const categories = Array.isArray(post.categories) ? post.categories : [];
+        const match = categories.includes(filter.category);
+        console.log(
+          `Post ${post.id} categories:`,
+          categories,
+          'match:',
+          match,
+          'filter.category:',
+          filter.category
+        );
+        return match;
+      });
     }
-    if (filter.searchQuery) {
-      const query = filter.searchQuery.toLowerCase();
-      result = result.filter(
-        (post) =>
-          post.title.toLowerCase().includes(query) ||
-          post.content.toLowerCase().includes(query) ||
-          post.hashtags.some((tag) => tag.includes(query))
-      );
-    }
-    if (filter.sortBy === 'trending') {
-      // Frontend sorting for trending: prioritize total reactions
-      result.sort((a, b) => {
-        const aReactions = a.likes + a.supports;
-        const bReactions = b.likes + b.supports;
-        if (aReactions !== bReactions) {
-          return bReactions - aReactions; // Higher reactions first
-        }
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(); // Newer first
-        });
-    } else {
-      // Already sorted by newest from backend
-    }
+
     return result;
   }, [posts, filter]);
 
@@ -202,7 +186,6 @@ const Feeds = () => {
       content: '',
       category: 'All',
       hashtags: [],
-      image: null,
     });
   };
 
@@ -212,20 +195,6 @@ const Feeds = () => {
       ...prev,
       [name]: value,
     }));
-  };
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPostData((prev) => ({
-        ...prev,
-        image: file,
-      }));
-    }
-  };
-
-  const triggerFileInput = () => {
-    fileInputRef.current.click();
   };
 
   return (
@@ -242,8 +211,42 @@ const Feeds = () => {
             </div>
             {CATEGORIES.slice(1).map((category) => (
               <div className="flex flex-col items-center" key={category}>
-                <div className={`story-circle bg-${category === 'Mental Health' ? 'purple' : category === 'Relationships' ? 'pink' : category === 'Career Stress' ? 'green' : category === 'Family Issues' ? 'orange' : 'red'}-100`}>
-                  <i className={`fas fa-${category === 'Mental Health' ? 'heart' : category === 'Relationships' ? 'users' : category === 'Career Stress' ? 'briefcase' : category === 'Family Issues' ? 'home' : 'rainbow'} text-${category === 'Mental Health' ? 'purple' : category === 'Relationships' ? 'pink' : category === 'Career Stress' ? 'green' : category === 'Family Issues' ? 'orange' : 'red'}-500`}></i>
+                <div
+                  className={`story-circle bg-${
+                    category === 'Mental Health'
+                      ? 'purple'
+                      : category === 'Relationships'
+                      ? 'pink'
+                      : category === 'Career Stress'
+                      ? 'green'
+                      : category === 'Family Issues'
+                      ? 'orange'
+                      : 'red'
+                  }-100`}
+                >
+                  <i
+                    className={`fas fa-${
+                      category === 'Mental Health'
+                        ? 'heart'
+                        : category === 'Relationships'
+                        ? 'users'
+                        : category === 'Career Stress'
+                        ? 'briefcase'
+                        : category === 'Family Issues'
+                        ? 'home'
+                        : 'rainbow'
+                    } text-${
+                      category === 'Mental Health'
+                        ? 'purple'
+                        : category === 'Relationships'
+                        ? 'pink'
+                        : category === 'Career Stress'
+                        ? 'green'
+                        : category === 'Family Issues'
+                        ? 'orange'
+                        : 'red'
+                    }-500`}
+                  ></i>
                 </div>
                 <span className="text-xs mt-1">{category.split(' ')[0]}</span>
               </div>
@@ -260,9 +263,6 @@ const Feeds = () => {
           setIsAnonymous={setIsAnonymous}
           isPosting={isPosting}
           handleCreatePost={handleCreatePost}
-          fileInputRef={fileInputRef}
-          triggerFileInput={triggerFileInput}
-          handleImageUpload={handleImageUpload}
           handlePostDataChange={handlePostDataChange}
         />
         <FilterSection filter={filter} handleFilterChange={handleFilterChange} />
