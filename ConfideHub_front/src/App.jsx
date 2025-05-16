@@ -4,7 +4,7 @@ import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
 import ConfessMain from './components/Confession/ConfessMain';
 import Resources from './components/Resources/ResourcesHome';
-import Feeds from './feeds/feeds';
+import FeedsTest from './feeds/feeds';
 import AuthPage from './pages/Auth/AuthPage';
 import ProtectedRoute from './Context/ProtectedRoute';
 import AppProvider from './Context/AppProvider';
@@ -12,8 +12,8 @@ import AppProvider from './Context/AppProvider';
 function App() {
   return (
     <AppProvider>
-      <Routes> {/* Routes, not Router */}
-        <Route
+      <Routes>
+      <Route
           path="/auth"
           element={
             <ProtectedRoute>
@@ -29,7 +29,7 @@ function App() {
                 <Routes> {/* Nested Routes */}
                   <Route path="/" element={<Home />} />
                   <Route path="/about" />
-                  <Route path="/feed" element={<Feeds />} />
+                  <Route path="/feed" element={<FeedsTest />} />
                   <Route path="/confessions" element={<ConfessMain />} />
                   <Route path="/categories" />
                   <Route path="/resources" element={<Resources />} />

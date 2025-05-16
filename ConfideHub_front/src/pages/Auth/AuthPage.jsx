@@ -32,24 +32,14 @@ const AuthPage = () => {
     white: '#FFFFFF'
   };
 
-  // Password strength checker
   useEffect(() => {
     if (formData.register.password) {
       let strength = 0;
-
-      // Length check
       if (formData.register.password.length >= 8) strength += 1;
-
-      // Contains number
       if (/\d/.test(formData.register.password)) strength += 1;
-
-      // Contains special character
       if (/[!@#$%^&*(),.?":{}|<>]/.test(formData.register.password)) strength += 1;
-
-      // Contains uppercase and lowercase
       if (/[a-z]/.test(formData.register.password) &&
         /[A-Z]/.test(formData.register.password)) strength += 1;
-
       setPasswordStrength(strength);
     } else {
       setPasswordStrength(0);
@@ -155,14 +145,12 @@ const AuthPage = () => {
     return isValid;
   };
 
-
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     if (isLoggedIn) {
-        navigate('/feed');
+      navigate('/feed');
     }
-}, [navigate]);
-
+  }, [navigate]);
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -185,9 +173,12 @@ const AuthPage = () => {
         if (!response.ok) {
           throw new Error(data.message || 'Login failed');
         }
-        setUser(data.username);
-        localStorage.setItem('isLoggedIn', 'true');
-        navigate('/feed');
+        if (data.username !== null) {
+          setUser(data.username);
+          localStorage.setItem('isLoggedIn', 'true');
+          navigate('/feed');
+        }
+
       } catch (error) {
         setLoginError(error.message);
         console.error('Login error:', error);
@@ -199,7 +190,6 @@ const AuthPage = () => {
     }
   };
 
-  //  Register Submit
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     setRegisterError('');
@@ -214,9 +204,7 @@ const AuthPage = () => {
           },
           body: JSON.stringify(formData.register),
         });
-
         const data = await response.json();
-
         if (!response.ok) {
           throw new Error(data.message || 'Registration failed');
         }
@@ -248,8 +236,8 @@ const AuthPage = () => {
               Share your thoughts anonymously
             </p>
           </div>
-          
-          {/* Decorative elements */}
+
+          {/* Decorative Circles */}
           <div className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full" style={{ background: colors.secondary, opacity: 0.3 }}></div>
           <div className="absolute -top-6 -left-6 w-20 h-20 rounded-full" style={{ background: colors.accent, opacity: 0.2 }}></div>
         </div>
@@ -259,22 +247,20 @@ const AuthPage = () => {
           {/* Tabs */}
           <div className="flex mb-6 bg-gray-100 rounded-lg p-1">
             <button
-              className={`flex-1 py-2 rounded-md font-medium focus:outline-none transition-all duration-300 ${
-                activeTab === 'login'
-                  ? `text-white shadow-md` 
+              className={`flex-1 py-2 rounded-md font-medium focus:outline-none transition-all duration-300 ${activeTab === 'login'
+                  ? `text-white shadow-md`
                   : 'text-gray-500 hover:text-gray-700'
-              }`}
+                }`}
               style={{ backgroundColor: activeTab === 'login' ? colors.primary : 'transparent' }}
               onClick={() => setActiveTab('login')}
             >
               Login
             </button>
             <button
-              className={`flex-1 py-2 rounded-md font-medium focus:outline-none transition-all duration-300 ${
-                activeTab === 'register'
-                  ? `text-white shadow-md` 
+              className={`flex-1 py-2 rounded-md font-medium focus:outline-none transition-all duration-300 ${activeTab === 'register'
+                  ? `text-white shadow-md`
                   : 'text-gray-500 hover:text-gray-700'
-              }`}
+                }`}
               style={{ backgroundColor: activeTab === 'register' ? colors.primary : 'transparent' }}
               onClick={() => setActiveTab('register')}
             >
@@ -313,9 +299,9 @@ const AuthPage = () => {
                         value={formData.login.username}
                         onChange={(e) => handleInputChange('login', 'username', e.target.value)}
                         className={`w-full pl-10 pr-3 py-2 border ${errors.login.username ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all`}
-                        style={{ 
-                          focusRing: colors.primary, 
-                          focusBorder: colors.primary 
+                        style={{
+                          focusRing: colors.primary,
+                          focusBorder: colors.primary
                         }}
                         placeholder="Username"
                       />
@@ -330,8 +316,8 @@ const AuthPage = () => {
                       <label htmlFor="login-password" className="block text-gray-700 text-sm font-medium">
                         Password
                       </label>
-                      <a 
-                        href="#" 
+                      <a
+                        href="#"
                         className="text-sm hover:underline"
                         style={{ color: colors.primary }}
                       >
@@ -350,9 +336,9 @@ const AuthPage = () => {
                         value={formData.login.password}
                         onChange={(e) => handleInputChange('login', 'password', e.target.value)}
                         className={`w-full pl-10 pr-10 py-2 border ${errors.login.password ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all`}
-                        style={{ 
-                          focusRing: colors.primary, 
-                          focusBorder: colors.primary 
+                        style={{
+                          focusRing: colors.primary,
+                          focusBorder: colors.primary
                         }}
                         placeholder="••••••••"
                       />
@@ -387,7 +373,7 @@ const AuthPage = () => {
                       checked={formData.login.remember}
                       onChange={(e) => handleInputChange('login', 'remember', e.target.checked)}
                       className="h-4 w-4 focus:ring-2 focus:ring-opacity-50 border-gray-300 rounded"
-                      style={{ 
+                      style={{
                         color: colors.primary,
                         focusRing: colors.primary
                       }}
@@ -400,8 +386,8 @@ const AuthPage = () => {
                   <button
                     type="submit"
                     className="w-full py-3 rounded-lg font-medium transition-all duration-300 text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-                    style={{ 
-                      background: `linear-gradient(to right, ${colors.primary}, ${colors.accent})` 
+                    style={{
+                      background: `linear-gradient(to right, ${colors.primary}, ${colors.accent})`
                     }}
                   >
                     Sign In
@@ -424,10 +410,10 @@ const AuthPage = () => {
                         style={{ focusRing: colors.primary }}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="h-5 w-5">
-                          <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
-                          <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
-                          <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
-                          <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+                          <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
+                          <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
+                          <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
+                          <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
                         </svg>
                       </button>
                       <button
@@ -436,8 +422,8 @@ const AuthPage = () => {
                         style={{ focusRing: colors.primary }}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="h-5 w-5">
-                          <path fill="#3F51B5" d="M42,37c0,2.762-2.238,5-5,5H11c-2.761,0-5-2.238-5-5V11c0-2.762,2.239-5,5-5h26c2.762,0,5,2.238,5,5V37z"/>
-                          <path fill="#FFFFFF" d="M34.368,25H31v13h-5V25h-3v-4h3v-2.41c0.002-3.508,1.459-5.59,5.592-5.59H35v4h-2.287C31.104,17,31,17.6,31,18.723V21h4L34.368,25z"/>
+                          <path fill="#3F51B5" d="M42,37c0,2.762-2.238,5-5,5H11c-2.761,0-5-2.238-5-5V11c0-2.762,2.239-5,5-5h26c2.762,0,5,2.238,5,5V37z" />
+                          <path fill="#FFFFFF" d="M34.368,25H31v13h-5V25h-3v-4h3v-2.41c0.002-3.508,1.459-5.59,5.592-5.59H35v4h-2.287C31.104,17,31,17.6,31,18.723V21h4L34.368,25z" />
                         </svg>
                       </button>
                       <button
@@ -446,8 +432,8 @@ const AuthPage = () => {
                         style={{ focusRing: colors.primary }}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="h-5 w-5">
-                          <path d="M40.9,26.2c-0.1-0.8-0.3-1.6-0.7-2.7c-0.4-1.5-1-3.1-2-4.8c-2-3.5-5.3-6.9-9.1-6.9c-1.2,0-2.4,0.3-3.5,0.8 c-0.8,0.3-1.6,0.8-2.3,1.4c-0.5,0.4-0.9,0.9-1.4,1.5c-0.1-0.1-0.2-0.2-0.3-0.4c-0.5-0.6-1-1-1.5-1.4c-0.7-0.6-1.5-1-2.3-1.3 c-1.1-0.5-2.3-0.8-3.5-0.8c-3.8,0-7.2,3.4-9.1,6.9c-1,1.7-1.5,3.3-2,4.8c-0.4,1.2-0.6,2-0.7,2.7c-0.1,1.1-0.2,2.2-0.2,3.1 c0,2.1,0.5,3.8,1.4,5c0.4,0.5,0.9,0.9,1.4,1.2c1.4,0.8,3.1,1,4.8,1c1.7,0,3.4-0.2,4.8-1c0.5-0.3,1-0.7,1.4-1.2 c0.1-0.1,0.1-0.1,0.2-0.2c0,0.1,0.1,0.1,0.1,0.2c0.4,0.5,0.9,0.9,1.4,1.2c1.4,0.8,3.1,1,4.8,1c1.7,0,3.4-0.2,4.8-1 c0.5-0.3,1-0.7,1.4-1.2c0.9-1.1,1.4-2.8,1.4-5C41.1,28.4,41,27.3,40.9,26.2z"/>
-                          <path fill="#212121" d="M24.1,10.6c-0.4,0.4-0.9,0.9-1.4,1.5c-0.1-0.1-0.2-0.2-0.3-0.4c-0.5-0.6-1-1-1.5-1.4 C16.3,6.2,9,9.7,5.1,17.2c-1,1.7-1.5,3.3-2,4.8c-0.4,1.2-0.6,2-0.7,2.7c-0.1,1.1-0.2,2.2-0.2,3.1c0,2.1,0.5,3.8,1.4,5 c0.4,0.5,0.9,0.9,1.4,1.2c1.4,0.8,3.1,1,4.8,1c1.7,0,3.4-0.2,4.8-1c0.5-0.3,1-0.7,1.4-1.2c0.1-0.1,0.1-0.1,0.2-0.2 c0,0.1,0.1,0.1,0.1,0.2c0.4,0.5,0.9,0.9,1.4,1.2c1.4,0.8,3.1,1,4.8,1c1.7,0,3.4-0.2,4.8-1c0.5-0.3,1-0.7,1.4-1.2 c0.9-1.1,1.4-2.8,1.4-5c0-0.9-0.1-2-0.2-3.1c-0.1-0.8-0.3-1.6-0.7-2.7c-0.4-1.5-1-3.1-2-4.8C33.7,11.6,27.8,7.2,24.1,10.6z M29.2,20.2c1.1,0,2,0.9,2,2c0,1.1-0.9,2-2,2c-1.1,0-2-0.9-2-2C27.2,21.1,28.1,20.2,29.2,20.2z M17.8,20.2c1.1,0,2,0.9,2,2 c0,1.1-0.9,2-2,2c-1.1,0-2-0.9-2-2C15.8,21.1,16.7,20.2,17.8,20.2z"/>
+                          <path d="M40.9,26.2c-0.1-0.8-0.3-1.6-0.7-2.7c-0.4-1.5-1-3.1-2-4.8c-2-3.5-5.3-6.9-9.1-6.9c-1.2,0-2.4,0.3-3.5,0.8 c-0.8,0.3-1.6,0.8-2.3,1.4c-0.5,0.4-0.9,0.9-1.4,1.5c-0.1-0.1-0.2-0.2-0.3-0.4c-0.5-0.6-1-1-1.5-1.4c-0.7-0.6-1.5-1-2.3-1.3 c-1.1-0.5-2.3-0.8-3.5-0.8c-3.8,0-7.2,3.4-9.1,6.9c-1,1.7-1.5,3.3-2,4.8c-0.4,1.2-0.6,2-0.7,2.7c-0.1,1.1-0.2,2.2-0.2,3.1 c0,2.1,0.5,3.8,1.4,5c0.4,0.5,0.9,0.9,1.4,1.2c1.4,0.8,3.1,1,4.8,1c1.7,0,3.4-0.2,4.8-1c0.5-0.3,1-0.7,1.4-1.2 c0.1-0.1,0.1-0.1,0.2-0.2c0,0.1,0.1,0.1,0.1,0.2c0.4,0.5,0.9,0.9,1.4,1.2c1.4,0.8,3.1,1,4.8,1c1.7,0,3.4-0.2,4.8-1 c0.5-0.3,1-0.7,1.4-1.2c0.9-1.1,1.4-2.8,1.4-5C41.1,28.4,41,27.3,40.9,26.2z" />
+                          <path fill="#212121" d="M24.1,10.6c-0.4,0.4-0.9,0.9-1.4,1.5c-0.1-0.1-0.2-0.2-0.3-0.4c-0.5-0.6-1-1-1.5-1.4 C16.3,6.2,9,9.7,5.1,17.2c-1,1.7-1.5,3.3-2,4.8c-0.4,1.2-0.6,2-0.7,2.7c-0.1,1.1-0.2,2.2-0.2,3.1c0,2.1,0.5,3.8,1.4,5 c0.4,0.5,0.9,0.9,1.4,1.2c1.4,0.8,3.1,1,4.8,1c1.7,0,3.4-0.2,4.8-1c0.5-0.3,1-0.7,1.4-1.2c0.1-0.1,0.1-0.1,0.2-0.2 c0,0.1,0.1,0.1,0.1,0.2c0.4,0.5,0.9,0.9,1.4,1.2c1.4,0.8,3.1,1,4.8,1c1.7,0,3.4-0.2,4.8-1c0.5-0.3,1-0.7,1.4-1.2 c0.9-1.1,1.4-2.8,1.4-5c0-0.9-0.1-2-0.2-3.1c-0.1-0.8-0.3-1.6-0.7-2.7c-0.4-1.5-1-3.1-2-4.8C33.7,11.6,27.8,7.2,24.1,10.6z M29.2,20.2c1.1,0,2,0.9,2,2c0,1.1-0.9,2-2,2c-1.1,0-2-0.9-2-2C27.2,21.1,28.1,20.2,29.2,20.2z M17.8,20.2c1.1,0,2,0.9,2,2 c0,1.1-0.9,2-2,2c-1.1,0-2-0.9-2-2C15.8,21.1,16.7,20.2,17.8,20.2z" />
                         </svg>
                       </button>
                     </div>
@@ -485,9 +471,9 @@ const AuthPage = () => {
                         value={formData.register.username}
                         onChange={(e) => handleInputChange('register', 'username', e.target.value)}
                         className={`w-full pl-10 pr-3 py-2 border ${errors.register.username ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all`}
-                        style={{ 
-                          focusRing: colors.primary, 
-                          focusBorder: colors.primary 
+                        style={{
+                          focusRing: colors.primary,
+                          focusBorder: colors.primary
                         }}
                         placeholder="John Doe"
                       />
@@ -514,9 +500,9 @@ const AuthPage = () => {
                         value={formData.register.email}
                         onChange={(e) => handleInputChange('register', 'email', e.target.value)}
                         className={`w-full pl-10 pr-3 py-2 border ${errors.register.email ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all`}
-                        style={{ 
-                          focusRing: colors.primary, 
-                          focusBorder: colors.primary 
+                        style={{
+                          focusRing: colors.primary,
+                          focusBorder: colors.primary
                         }}
                         placeholder="your@email.com"
                       />
@@ -542,9 +528,9 @@ const AuthPage = () => {
                         value={formData.register.password}
                         onChange={(e) => handleInputChange('register', 'password', e.target.value)}
                         className={`w-full pl-10 pr-10 py-2 border ${errors.register.password ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all`}
-                        style={{ 
-                          focusRing: colors.primary, 
-                          focusBorder: colors.primary 
+                        style={{
+                          focusRing: colors.primary,
+                          focusBorder: colors.primary
                         }}
                         placeholder="••••••••"
                       />
@@ -572,19 +558,18 @@ const AuthPage = () => {
                     )}
                     <div className="mt-2 flex">
                       {[1, 2, 3, 4].map((level) => (
-                        <div 
+                        <div
                           key={level}
-                          className={`h-1 flex-1 rounded-full mx-0.5 transition-all duration-300 ${
-                            passwordStrength >= level 
-                              ? level === 1 
-                                ? 'bg-red-500' 
-                                : level === 2 
-                                  ? 'bg-orange-500' 
-                                  : level === 3 
-                                    ? 'bg-yellow-500' 
+                          className={`h-1 flex-1 rounded-full mx-0.5 transition-all duration-300 ${passwordStrength >= level
+                              ? level === 1
+                                ? 'bg-red-500'
+                                : level === 2
+                                  ? 'bg-orange-500'
+                                  : level === 3
+                                    ? 'bg-yellow-500'
                                     : 'bg-green-500'
                               : 'bg-gray-200'
-                          }`}
+                            }`}
                         ></div>
                       ))}
                     </div>
@@ -613,9 +598,9 @@ const AuthPage = () => {
                         value={formData.register.confirmPassword}
                         onChange={(e) => handleInputChange('register', 'confirmPassword', e.target.value)}
                         className={`w-full pl-10 pr-10 py-2 border ${errors.register.confirmPassword ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all`}
-                        style={{ 
-                          focusRing: colors.primary, 
-                          focusBorder: colors.primary 
+                        style={{
+                          focusRing: colors.primary,
+                          focusBorder: colors.primary
                         }}
                         placeholder="••••••••"
                       />
@@ -650,23 +635,23 @@ const AuthPage = () => {
                       checked={formData.register.terms}
                       onChange={(e) => handleInputChange('register', 'terms', e.target.checked)}
                       className={`h-4 w-4 focus:ring-2 focus:ring-opacity-50 border-gray-300 rounded ${errors.register.terms ? 'border-red-500' : ''}`}
-                      style={{ 
+                      style={{
                         color: colors.primary,
                         focusRing: colors.primary
                       }}
                     />
                     <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
                       I agree to the{' '}
-                      <a 
-                        href="#" 
+                      <a
+                        href="#"
                         className="hover:underline"
                         style={{ color: colors.primary }}
                       >
                         Terms
                       </a>{' '}
                       and{' '}
-                      <a 
-                        href="#" 
+                      <a
+                        href="#"
                         className="hover:underline"
                         style={{ color: colors.primary }}
                       >
@@ -682,8 +667,8 @@ const AuthPage = () => {
                     <button
                       type="submit"
                       className="w-full py-3 rounded-lg font-medium transition-all duration-300 text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-                      style={{ 
-                        background: `linear-gradient(to right, ${colors.primary}, ${colors.accent})` 
+                      style={{
+                        background: `linear-gradient(to right, ${colors.primary}, ${colors.accent})`
                       }}
                     >
                       Create Account
@@ -691,15 +676,15 @@ const AuthPage = () => {
                     <button
                       type="button"
                       className="w-full bg-white border border-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-50 transition-all focus:outline-none focus:ring-2 focus:ring-opacity-50 flex justify-center items-center space-x-2"
-                      style={{ 
+                      style={{
                         focusRing: colors.primary
                       }}
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="h-5 w-5">
-                        <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
-                        <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
-                        <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
-                        <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+                        <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
+                        <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
+                        <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
+                        <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
                       </svg>
                       <span>Sign up with Google</span>
                     </button>
@@ -713,22 +698,22 @@ const AuthPage = () => {
         <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
             <div className="flex space-x-4">
-              <a 
-                href="#" 
+              <a
+                href="#"
                 className="hover:text-blue-600 text-sm transition-colors duration-300"
                 style={{ color: colors.primary }}
               >
                 Help
               </a>
-              <a 
-                href="#" 
+              <a
+                href="#"
                 className="hover:text-blue-600 text-sm transition-colors duration-300"
                 style={{ color: colors.primary }}
               >
                 Privacy
               </a>
-              <a 
-                href="#" 
+              <a
+                href="#"
                 className="hover:text-blue-600 text-sm transition-colors duration-300"
                 style={{ color: colors.primary }}
               >

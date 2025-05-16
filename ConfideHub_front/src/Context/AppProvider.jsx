@@ -1,37 +1,33 @@
-import React, { createContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// Context/AppProvider.js
+import React, { createContext, useState, useEffect } from 'react';
 
-export const AppContext = createContext();
+export const AppContext = createContext({
+  user: undefined,
+  setUser: () => {},
+});
 
-export default function AppProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const navigate = useNavigate();
-
-  const getUser = async () => {
-    try {
-      const res = await fetch('http://localhost:8080/api/auth/user', {
-        method: 'GET', 
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setUser(data.username);
-      } else {
-        setUser(null);
-        navigate('/auth', { replace: true });
-      }
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      setUser(null);
-      navigate('/auth', { replace: true });
-    }
-  };
+const AppProvider = ({ children }) => {
+  const [user, setUser] = useState(undefined); 
 
   useEffect(() => {
-    getUser();
+ 
+    fetch('/api/auth/user', {
+      method: 'GET',
+      credentials: 'include', 
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(async (res) => {
+        if (res.ok) {
+          const payload = await res.json();
+          setUser(payload.username);
+        } else {
+          setUser(null); 
+          localStorage.removeItem('isLoggedIn'); 
+        }
+      })
+      .catch(() => setUser(null) , localStorage.removeItem('isLoggedIn')); 
   }, []);
 
   return (
@@ -39,4 +35,6 @@ export default function AppProvider({ children }) {
       {children}
     </AppContext.Provider>
   );
-}
+};
+
+export default AppProvider;
