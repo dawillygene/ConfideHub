@@ -2,6 +2,7 @@ package com.dawillygene.ConfideHubs.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,10 +25,17 @@ public class Post {
     @ElementCollection
     private List<String> hashtags;
 
+    @Transient
     private int likes;
+
+    @Transient
     private int supports;
+
+    @Transient
     private int comments;
-    private boolean bookmarked;
+
+    @Transient
+    private boolean bookmarked; // Ensure this field is present
 
     private LocalDateTime createdAt;
     private LocalDateTime expiresAt;

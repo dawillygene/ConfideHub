@@ -1,8 +1,19 @@
 package com.dawillygene.ConfideHubs.service;
 
 import com.dawillygene.ConfideHubs.model.Post;
+import com.dawillygene.ConfideHubs.model.Reaction;
+import com.dawillygene.ConfideHubs.model.User;
 import com.dawillygene.ConfideHubs.repository.PostRepository;
+import com.dawillygene.ConfideHubs.repository.ReactionRepository;
+import com.dawillygene.ConfideHubs.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,8 +24,16 @@ import java.util.UUID;
 @Service
 public class PostService {
 
+    private static final Logger logger = LoggerFactory.getLogger(PostService.class);
+
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private ReactionRepository reactionRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public Post createPost(Post post) {
         if (post.getId() == null) {
@@ -27,12 +46,32 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public Page<Post> getAllPosts(int page, int size, String sortBy) {
+        // Define sorting logic
+        Sort sort;
+        switch (sortBy) {
+            case "trending":
+                // Sort by total reactions (likes + supports) and then by createdAt
+                sort = Sort.by(
+                        Sort.Order.desc("createdAt") // Fallback to newer posts
+                );
+                break;
+            case "newest":
+            default:
+                sort = Sort.by(Sort.Order.desc("createdAt"));
+                break;
+        }
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Post> postPage = postRepository.findAll(pageable);
+        postPage.getContent().forEach(this::enrichPostWithReactions);
+        return postPage;
     }
 
     public Optional<Post> getPostById(String id) {
-        return postRepository.findById(id);
+        Optional<Post> post = postRepository.findById(id);
+        post.ifPresent(this::enrichPostWithReactions);
+        return post;
     }
 
     public Post updatePost(String id, Post updatedPost) {
@@ -43,10 +82,6 @@ public class PostService {
             post.setContent(updatedPost.getContent());
             post.setCategories(updatedPost.getCategories());
             post.setHashtags(updatedPost.getHashtags());
-            post.setLikes(updatedPost.getLikes());
-            post.setSupports(updatedPost.getSupports());
-            post.setComments(updatedPost.getComments());
-            post.setBookmarked(updatedPost.isBookmarked());
             return postRepository.save(post);
         }
         throw new RuntimeException("Post not found");
@@ -56,23 +91,54 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
-    public Post updateReaction(String id, String reactionType) {
-        Optional<Post> optionalPost = postRepository.findById(id);
+    public Post updateReaction(String postId, String reactionType) {
+        if (!List.of("like", "dislike", "support", "bookmark").contains(reactionType)) {
+            throw new IllegalArgumentException("Invalid reaction type: " + reactionType);
+        }
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Optional<Post> optionalPost = postRepository.findById(postId);
         if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
-            switch (reactionType) {
-                case "like":
-                    post.setLikes(post.getLikes() + 1);
-                    break;
-                case "support":
-                    post.setSupports(post.getSupports() + 1);
-                    break;
-                case "bookmark":
-                    post.setBookmarked(!post.isBookmarked());
-                    break;
+            Optional<Reaction> existingReaction = reactionRepository
+                    .findByPostIdAndUserIdAndReactionType(postId, user.getId(), reactionType);
+
+            if (existingReaction.isPresent()) {
+                reactionRepository.delete(existingReaction.get());
+                logger.info("Removed {} reaction for post {} by user {}", reactionType, postId, user.getId());
+            } else {
+                Reaction reaction = new Reaction();
+                reaction.setPost(post);
+                reaction.setUser(user);
+                reaction.setReactionType(reactionType);
+                reactionRepository.save(reaction);
+                logger.info("Added {} reaction for post {} by user {}", reactionType, postId, user.getId());
             }
-            return postRepository.save(post);
+
+            enrichPostWithReactions(post);
+            return post;
         }
         throw new RuntimeException("Post not found");
+    }
+
+    private void enrichPostWithReactions(Post post) {
+        post.setLikes((int) reactionRepository.countByPostIdAndReactionType(post.getId(), "like"));
+        post.setSupports((int) reactionRepository.countByPostIdAndReactionType(post.getId(), "support"));
+        post.setComments((int) reactionRepository.countByPostIdAndReactionType(post.getId(), "comment"));
+        post.setBookmarked(reactionRepository.findByPostIdAndUserIdAndReactionType(
+                post.getId(),
+                getCurrentUserId(),
+                "bookmark"
+        ).isPresent());
+    }
+
+    private Long getCurrentUserId() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByUsername(username)
+                .map(User::getId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

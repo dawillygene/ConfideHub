@@ -1,10 +1,11 @@
 package com.dawillygene.ConfideHubs.controllers;
 
-
 import com.dawillygene.ConfideHubs.model.Post;
 import com.dawillygene.ConfideHubs.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,13 +18,17 @@ public class PostController {
     private PostService postService;
 
     @PostMapping
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Post> createPost(@RequestBody Post post) {
         return ResponseEntity.ok(postService.createPost(post));
     }
 
     @GetMapping
-    public ResponseEntity<List<Post>> getAllPosts() {
-        return ResponseEntity.ok(postService.getAllPosts());
+    public ResponseEntity<Page<Post>> getAllPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "newest") String sortBy) {
+        return ResponseEntity.ok(postService.getAllPosts(page, size, sortBy));
     }
 
     @GetMapping("/{id}")
@@ -34,17 +39,20 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Post> updatePost(@PathVariable String id, @RequestBody Post post) {
         return ResponseEntity.ok(postService.updatePost(id, post));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> deletePost(@PathVariable String id) {
         postService.deletePost(id);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/react/{reactionType}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Post> reactToPost(@PathVariable String id, @PathVariable String reactionType) {
         return ResponseEntity.ok(postService.updateReaction(id, reactionType));
     }

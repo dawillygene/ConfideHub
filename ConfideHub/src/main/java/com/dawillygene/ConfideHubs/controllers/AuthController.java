@@ -136,9 +136,7 @@ public class AuthController {
                     .map(GrantedAuthority::getAuthority)
                     .collect(Collectors.toList());
 
-            // Set access token as HTTP-only cookie
             CookieUtils.setHttpOnlyCookie(response, "accessToken", accessToken, jwtExpirationMs / 1000, false); //convert to seconds
-            // Set refresh token as HTTP-only cookie
             CookieUtils.setHttpOnlyCookie(response, "refreshToken", refreshToken, jwtRefreshExpirationMs / 1000, false);
 
             return ResponseEntity.ok(new JwtResponse(null, null, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles)); // Changed:  Don't return tokens in body
@@ -155,7 +153,6 @@ public class AuthController {
                 .map(RefreshToken::getUser)
                 .map(user -> {
                     String newAccessToken = jwtUtils.generateTokenFromUsername(user.getUsername());
-                    // Set the new access token in a cookie
                     CookieUtils.setHttpOnlyCookie(response, "accessToken", newAccessToken, jwtExpirationMs / 1000, false);
                     return ResponseEntity.ok(new TokenRefreshResponse(newAccessToken, requestRefreshToken)); // Return the new access token
                 })
@@ -164,7 +161,6 @@ public class AuthController {
 
     @PostMapping("/logout") //added
     public ResponseEntity<?> logoutUser(HttpServletResponse response) {
-        // Clear the cookies
         CookieUtils.clearHttpOnlyCookie(response, "accessToken");
         CookieUtils.clearHttpOnlyCookie(response, "refreshToken");
         SecurityContextHolder.clearContext();
@@ -180,10 +176,8 @@ public class AuthController {
             return ResponseEntity.status(401).body(new MessageResponse("Unauthorized: User not authenticated.")); // Explicit 401
         }
 
-        //The principal should be of type UserDetails
         if (authentication.getPrincipal() instanceof UserDetails) {
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-            // Construct a response with the user details.  Do NOT include the password.
             return ResponseEntity.ok(new JwtResponse(null, null, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), userDetails.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
                     .collect(Collectors.toList())));
@@ -197,7 +191,7 @@ public class AuthController {
 
     }
 
-    //Utility class
+
     static class CookieUtils {
         public static void setHttpOnlyCookie(HttpServletResponse response, String name, String value, int maxAge, boolean secure) {
             Cookie cookie = new Cookie(name, value);
