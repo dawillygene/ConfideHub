@@ -9,12 +9,12 @@ import com.dawillygene.ConfideHubs.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -46,53 +46,48 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public Page<Post> getAllPosts(int page, int size, String sortBy) {
-        // Define sorting logic
-        Sort sort;
-        switch (sortBy) {
-            case "trending":
-                // Sort by total reactions (likes + supports) and then by createdAt
-                sort = Sort.by(
-                        Sort.Order.desc("createdAt") // Fallback to newer posts
-                );
-                break;
-            case "newest":
-            default:
-                sort = Sort.by(Sort.Order.desc("createdAt"));
-                break;
-        }
 
+    public Page<Post> getAllPosts(int page, int size, String sortBy) {
+        Sort sort = Sort.by(Sort.Order.desc("createdAt"));
+        if ("trending".equalsIgnoreCase(sortBy)) {
+            sort = Sort.by(Sort.Order.desc("trendingScore"))
+                    .and(Sort.by(Sort.Order.desc("createdAt")))
+                    .and(Sort.by(Sort.Order.asc("id")));
+        } else if ("newest".equalsIgnoreCase(sortBy)) {
+            sort = Sort.by(Sort.Order.desc("createdAt"))
+                    .and(Sort.by(Sort.Order.asc("id")));
+        }
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Post> postPage = postRepository.findAll(pageable);
-        postPage.getContent().forEach(this::enrichPostWithReactions);
-        return postPage;
+        return postRepository.findAll(pageable);
     }
 
     public Optional<Post> getPostById(String id) {
-        Optional<Post> post = postRepository.findById(id);
-        post.ifPresent(this::enrichPostWithReactions);
-        return post;
+        return postRepository.findById(id);
     }
 
     public Post updatePost(String id, Post updatedPost) {
-        Optional<Post> existingPost = postRepository.findById(id);
-        if (existingPost.isPresent()) {
-            Post post = existingPost.get();
-            post.setTitle(updatedPost.getTitle());
-            post.setContent(updatedPost.getContent());
-            post.setCategories(updatedPost.getCategories());
-            post.setHashtags(updatedPost.getHashtags());
-            return postRepository.save(post);
-        }
-        throw new RuntimeException("Post not found");
+        return postRepository.findById(id)
+                .map(existingPost -> {
+                    existingPost.setTitle(updatedPost.getTitle());
+                    existingPost.setContent(updatedPost.getContent());
+                    existingPost.setCategories(updatedPost.getCategories());
+                    existingPost.setHashtags(updatedPost.getHashtags());
+                    return postRepository.save(existingPost);
+                })
+                .orElseThrow(() -> new RuntimeException("Post not found"));
     }
 
     public void deletePost(String id) {
-        postRepository.deleteById(id);
+        if (postRepository.existsById(id)) {
+            postRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Post not found");
+        }
     }
 
+    @Transactional
     public Post updateReaction(String postId, String reactionType) {
-        if (!List.of("like", "dislike", "support", "bookmark").contains(reactionType)) {
+        if (!List.of("like", "support", "comment", "bookmark").contains(reactionType.toLowerCase())) {
             throw new IllegalArgumentException("Invalid reaction type: " + reactionType);
         }
 
@@ -100,39 +95,59 @@ public class PostService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Optional<Post> optionalPost = postRepository.findById(postId);
-        if (optionalPost.isPresent()) {
-            Post post = optionalPost.get();
-            Optional<Reaction> existingReaction = reactionRepository
-                    .findByPostIdAndUserIdAndReactionType(postId, user.getId(), reactionType);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
 
-            if (existingReaction.isPresent()) {
-                reactionRepository.delete(existingReaction.get());
-                logger.info("Removed {} reaction for post {} by user {}", reactionType, postId, user.getId());
-            } else {
-                Reaction reaction = new Reaction();
-                reaction.setPost(post);
-                reaction.setUser(user);
-                reaction.setReactionType(reactionType);
-                reactionRepository.save(reaction);
-                logger.info("Added {} reaction for post {} by user {}", reactionType, postId, user.getId());
-            }
+        Optional<Reaction> existingReaction = reactionRepository
+                .findByPostIdAndUserIdAndReactionType(postId, user.getId(), reactionType);
 
-            enrichPostWithReactions(post);
-            return post;
+        if (existingReaction.isPresent()) {
+            reactionRepository.delete(existingReaction.get());
+            updatePostReactionCounts(post, reactionType, -1);
+        } else {
+            Reaction reaction = new Reaction();
+            reaction.setPost(post);
+            reaction.setUser(user);
+            reaction.setReactionType(reactionType);
+            reactionRepository.save(reaction);
+            updatePostReactionCounts(post, reactionType, 1);
         }
-        throw new RuntimeException("Post not found");
+        return postRepository.save(post);
     }
 
-    private void enrichPostWithReactions(Post post) {
-        post.setLikes((int) reactionRepository.countByPostIdAndReactionType(post.getId(), "like"));
-        post.setSupports((int) reactionRepository.countByPostIdAndReactionType(post.getId(), "support"));
-        post.setComments((int) reactionRepository.countByPostIdAndReactionType(post.getId(), "comment"));
-        post.setBookmarked(reactionRepository.findByPostIdAndUserIdAndReactionType(
-                post.getId(),
-                getCurrentUserId(),
-                "bookmark"
-        ).isPresent());
+    private void updatePostReactionCounts(Post post, String reactionType, int change) {
+        switch (reactionType.toLowerCase()) {
+            case "like": post.setLikes(post.getLikes() + change); break;
+            case "support": post.setSupports(post.getSupports() + change); break;
+            case "comment": post.setComments(post.getComments() + change); break;
+        }
+    }
+
+
+//    @Scheduled(fixedRate = 3600000) // Run every hour
+    @Async
+    @Scheduled(fixedRate = 120000)
+    public void calculateTrendingScores() {
+        List<Post> allPosts = postRepository.findAll();
+        LocalDateTime now = LocalDateTime.now();
+        for (Post post : allPosts) {
+            long likeCount = reactionRepository.countByPostIdAndReactionType(post.getId(), "like");
+            long supportCount = reactionRepository.countByPostIdAndReactionType(post.getId(), "support");
+            long commentCount = reactionRepository.countByPostIdAndReactionType(post.getId(), "comment");
+
+            // Get ZoneOffset for the current time zone (you might want to make this configurable)
+            java.time.ZoneOffset currentOffset = java.time.OffsetDateTime.now().getOffset();
+
+            long nowEpochSecond = now.toEpochSecond(currentOffset);
+            long createdAtEpochSecond = post.getCreatedAt().toEpochSecond(currentOffset);
+
+            double timeFactor = Math.exp(-0.00001 * (nowEpochSecond - createdAtEpochSecond)); // Exponential decay
+            double trendingScore = (likeCount * 1 + supportCount * 2 + commentCount * 1.5) * timeFactor;
+            post.setTrendingScore(trendingScore);
+            postRepository.save(post);
+            logger.debug("Calculated trending score {} for post {}", trendingScore, post.getId());
+        }
+        logger.info("Trending scores updated.");
     }
 
     private Long getCurrentUserId() {

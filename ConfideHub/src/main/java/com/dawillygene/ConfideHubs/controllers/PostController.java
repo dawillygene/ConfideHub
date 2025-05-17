@@ -2,6 +2,7 @@ package com.dawillygene.ConfideHubs.controllers;
 
 import com.dawillygene.ConfideHubs.model.Post;
 import com.dawillygene.ConfideHubs.service.PostService;
+import com.dawillygene.ConfideHubs.service.RecommendationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,17 @@ public class PostController {
 
     @Autowired
     private PostService postService;
+
+    @Autowired
+    private RecommendationService recommendationService;
+
+
+
+    @GetMapping("/recommendations")
+    public ResponseEntity<List<Post>> getRecommendedPosts(@RequestParam(defaultValue = "10") int limit) {
+        List<Post> recommendedPosts = recommendationService.getRecommendedPosts(limit);
+        return ResponseEntity.ok(recommendedPosts);
+    }
 
     @PostMapping
     @PreAuthorize("isAuthenticated()")

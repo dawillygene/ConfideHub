@@ -25,18 +25,19 @@ public class Post {
     @ElementCollection
     private List<String> hashtags;
 
-    @Transient
+
     private int likes;
 
-    @Transient
     private int supports;
 
-    @Transient
+
     private int comments;
 
-    @Transient
-    private boolean bookmarked; // Ensure this field is present
+
+    private boolean bookmarked;
 
     private LocalDateTime createdAt;
     private LocalDateTime expiresAt;
+    private Double trendingScore;
+
 }

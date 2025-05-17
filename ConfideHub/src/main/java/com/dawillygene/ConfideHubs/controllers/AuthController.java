@@ -122,7 +122,7 @@ public class AuthController {
 
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) { // Added HttpServletResponse
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         try {
             Authentication authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -136,7 +136,7 @@ public class AuthController {
                     .map(GrantedAuthority::getAuthority)
                     .collect(Collectors.toList());
 
-            CookieUtils.setHttpOnlyCookie(response, "accessToken", accessToken, jwtExpirationMs / 1000, false); //convert to seconds
+            CookieUtils.setHttpOnlyCookie(response, "accessToken", accessToken, jwtExpirationMs / 1000, false);
             CookieUtils.setHttpOnlyCookie(response, "refreshToken", refreshToken, jwtRefreshExpirationMs / 1000, false);
 
             return ResponseEntity.ok(new JwtResponse(null, null, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles)); // Changed:  Don't return tokens in body

@@ -2,6 +2,8 @@ package com.dawillygene.ConfideHubs.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(
@@ -15,13 +17,15 @@ public class Reaction {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
+    private String reactionType;
 
-    @Column(nullable = false)
-    private String reactionType; // "like", "dislike", "support", "bookmark"
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 }
