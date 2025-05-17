@@ -28,6 +28,9 @@ const Header = () => {
             </div>
           </div>
           <nav className="hidden md:flex space-x-6">
+          <Link to="/fyp" className="text-gray-600 hover:text-primary">
+              For You
+            </Link>
             <Link to="/feed" className="text-gray-600 hover:text-primary">
               Feeds
             </Link>

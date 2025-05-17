@@ -1,3 +1,5 @@
+import React from 'react';
+
 const CATEGORY_STYLES = {
   'Unknown+ Space': 'bg-pink-100 text-pink-700',
   'Mental Health': 'bg-blue-100 text-blue-700',
@@ -40,7 +42,7 @@ const PostList = ({ posts, loading, handleReaction, lastPostElementRef }) => {
       ) : (
         posts.map((post, index) => (
           <div
-            key={post.id}
+            key={post.id} // Use post.id as the unique key
             ref={index === posts.length - 1 ? lastPostElementRef : null}
             className={`post-card bg-white shadow rounded-lg overflow-hidden border-l-4 ${getBorderStyle(post.categories)}`}
           >

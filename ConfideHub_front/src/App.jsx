@@ -8,6 +8,7 @@ import FeedsTest from './feeds/feeds';
 import AuthPage from './pages/Auth/AuthPage';
 import ProtectedRoute from './Context/ProtectedRoute';
 import AppProvider from './Context/AppProvider';
+import ForYou from './feeds/ForYou';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
                 <Routes> {/* Nested Routes */}
                   <Route path="/" element={<Home />} />
                   <Route path="/about" />
+                  <Route path="/fyp" element={<ForYou />} />
                   <Route path="/feed" element={<FeedsTest />} />
                   <Route path="/confessions" element={<ConfessMain />} />
                   <Route path="/categories" />
