@@ -1,0 +1,51 @@
+.bg-primary {
+    background-color: #0066CC;
+}
+
+.bg-secondary {
+    background-color: #FFAD03;
+}
+
+.bg-accent {
+    background-color: #FD9148;
+}
+
+.text-primary {
+    color: #0066CC;
+}
+
+.text-secondary {
+    color: #FFAD03;
+}
+
+.text-accent {
+    color: #FD9148;
+}
+
+.border-primary {
+    border-color: #0066CC;
+}
+
+.border-secondary {
+    border-color: #FFAD03;
+}
+
+.border-accent {
+    border-color: #FD9148;
+}
+
+.hover\:bg-primary-dark:hover {
+    background-color: #0055AA;
+}
+
+.hover\:bg-secondary-dark:hover {
+    background-color: #E09A00;
+}
+
+.hover\:bg-accent-dark:hover {
+    background-color: #E57F3D;
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}

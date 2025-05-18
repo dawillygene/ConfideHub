@@ -1,3 +1,6 @@
+import { useState, useCallback, useMemo, useEffect, useRef, useContext } from 'react';
+import { AppContext } from '../../Context/AppProvider';
+
 const CATEGORIES = [
     'Mental Health',
     'Relationships',
@@ -7,6 +10,7 @@ const CATEGORIES = [
   ];
   
   const Sidebar = () => {
+      const { user } = useContext(AppContext);
     return (
       <div className="sidebar w-1/4 mr-4 hidden md:block">
         <div className="sticky top-20">
@@ -14,7 +18,7 @@ const CATEGORIES = [
             <div className="sidebar-icon bg-blue-100">
               <i className="fas fa-user text-blue-500"></i>
             </div>
-            <span className="font-medium">Your Profile</span>
+            <span className="font-medium">Welcome {user}</span>
           </div>
           {CATEGORIES.map((category) => (
             <div className="sidebar-item" key={category}>

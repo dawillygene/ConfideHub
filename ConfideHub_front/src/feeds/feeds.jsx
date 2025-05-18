@@ -8,6 +8,7 @@ import CreatePostSection from '../components/FeedComponents/CreatePostSection';
 import PostModal from '../components/FeedComponents/PostModal';
 import FilterSection from '../components/FeedComponents/FilterSection';
 import PostList from '../components/FeedComponents/PostList';
+import StatusBar from '../components/FeedComponents/HorizontalNav';
 import { AppContext } from '../Context/AppProvider';
 
 const CATEGORIES = [
@@ -129,7 +130,7 @@ const Feeds = () => {
       try {
         const hashtags = extractHashtags(postData.content);
         const newPostData = {
-          username: isAnonymous ? `vnem_${Math.random().toString(36).substr(2, 4)}` : user || 'User',
+          username: isAnonymous ? `Anonymous_${Math.random().toString(36).substr(2, 4)}` : user || 'User',
           title: postData.content.substring(0, 50) + (postData.content.length > 50 ? '...' : ''),
           content: postData.content,
           categories: [postData.category],
@@ -227,7 +228,7 @@ const Feeds = () => {
       <Sidebar />
       <div className="main-feed w-full md:w-2/4">
         <div className="bg-white rounded-lg shadow p-4 mb-4 overflow-x-auto">
-          {/* ... (Story Circles) ... */}
+        <StatusBar />
         </div>
         <CreatePostSection openPostModal={openPostModal} isAnonymous={isAnonymous} />
         <PostModal
