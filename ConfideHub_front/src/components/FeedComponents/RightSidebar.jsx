@@ -1,6 +1,6 @@
 const RightSidebar = () => {
     return (
-      <div className="sidebar w-1/4 ml-4 hidden md:block">
+      <div className="sidebar w-1/4 ml-4 hidden md:block" >
         <div className="sticky top-20">
           <div className="bg-white rounded-lg shadow p-4 mb-4">
             <h3 className="font-bold text-gray-800 mb-2">Crisis Support</h3>

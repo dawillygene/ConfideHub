@@ -268,6 +268,7 @@ const Feeds = () => {
       </div>
       <RightSidebar />
     </div>
+    
   );
 };
 
