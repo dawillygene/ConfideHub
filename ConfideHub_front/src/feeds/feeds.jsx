@@ -167,9 +167,7 @@ const Feeds = () => {
       setPosts((prev) =>
         prev.map((post) => (post.id === postId ? response.data : post))
       );
-      //setRecommendedPosts((prev) =>  // Removed this
-      //  prev.map((rec) => (rec.id === postId ? response.data : rec))
-      //);
+   
       toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} updated successfully`);
       // Consider debouncing fetchRecommendations  // Removed this
     } catch (error) {
