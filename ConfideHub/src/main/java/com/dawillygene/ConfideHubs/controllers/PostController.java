@@ -1,6 +1,8 @@
 package com.dawillygene.ConfideHubs.controllers;
 
+import com.dawillygene.ConfideHubs.model.Comment;
 import com.dawillygene.ConfideHubs.model.Post;
+import com.dawillygene.ConfideHubs.service.CommentService;
 import com.dawillygene.ConfideHubs.service.PostService;
 import com.dawillygene.ConfideHubs.service.RecommendationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class PostController {
 
     @Autowired
     private RecommendationService recommendationService;
+
+    @Autowired
+    private CommentService commentService;
 
 
 
@@ -60,6 +65,35 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> deletePost(@PathVariable String id) {
         postService.deletePost(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{postId}/comments")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Comment> addComment(
+            @PathVariable String postId,
+            @RequestParam(required = false) Long parentId,
+            @RequestParam String content) {
+        Comment addedComment = commentService.addComment(postId, parentId, content);
+        return ResponseEntity.ok(addedComment);
+    }
+
+    @GetMapping("/{postId}/comments")
+    public ResponseEntity<List<Comment>> getCommentsByPost(@PathVariable String postId) {
+        List<Comment> comments = commentService.getCommentsByPost(postId);
+        return ResponseEntity.ok(comments);
+    }
+
+    @GetMapping("/comments/{commentId}/replies")
+    public ResponseEntity<List<Comment>> getRepliesByComment(@PathVariable Long commentId) {
+        List<Comment> replies = commentService.getRepliesByComment(commentId);
+        return ResponseEntity.ok(replies);
+    }
+
+    @DeleteMapping("/comments/{commentId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
+        commentService.deleteComment(commentId);
         return ResponseEntity.ok().build();
     }
 
