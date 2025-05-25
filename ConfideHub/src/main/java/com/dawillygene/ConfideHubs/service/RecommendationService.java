@@ -25,11 +25,11 @@ public class RecommendationService {
     @Autowired
     private UserRepository userRepository;
 
-    // Configuration for weights (can be moved to application.properties)
+
     private double collaborativeWeight = 0.6;
     private double contentWeight = 0.4;
 
-    // --- Collaborative Filtering Logic ---
+
 
     private Map<Long, Map<String, Integer>> getUserPostInteractionMatrix() {
         List<Reaction> allReactions = reactionRepository.findAll();
