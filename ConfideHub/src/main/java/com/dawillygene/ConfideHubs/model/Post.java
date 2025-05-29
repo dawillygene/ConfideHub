@@ -1,6 +1,7 @@
 package com.dawillygene.ConfideHubs.model;
 
 import jakarta.persistence.*;
+import jakarta.persistence.FetchType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -19,10 +20,10 @@ public class Post {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> categories;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> hashtags;
 
 
