@@ -66,6 +66,12 @@ const PostList = ({ posts, loading, handleReaction, lastPostElementRef }) => {
     return content.substring(0, MAX_PREVIEW_LENGTH);
   };
 
+  const cleanMarkdown = (text) => {
+    if (!text) return '';
+    // Remove ** markdown syntax for bold text
+    return text.replace(/\*\*(.*?)\*\*/g, '$1');
+  };
+
   return (
     <div className="space-y-6">
       {showLoading && !posts.length ? (
@@ -100,7 +106,6 @@ const PostList = ({ posts, loading, handleReaction, lastPostElementRef }) => {
                 ref={index === posts.length - 1 ? lastPostElementRef : null}
                 className={`post-card bg-white shadow-md hover:shadow-lg rounded-lg overflow-hidden border-l-4 transition-all duration-300 ${getBorderStyle(post.categories)}`}
               >
-                {/* Rest of your post card content remains the same */}
                 <div className="p-5">
                   {/* Header Section */}
                   <div className="flex items-center justify-between mb-4">
@@ -129,8 +134,10 @@ const PostList = ({ posts, loading, handleReaction, lastPostElementRef }) => {
                     </div>
                   </div>
 
-                  {/* Title Section */}
-                  <h3 className="text-lg font-bold text-gray-800 mb-3">{post.title}</h3>
+                  {/* Title Section - Updated */}
+                  <h3 className="text-lg font-bold text-gray-800 mb-3">
+                    {cleanMarkdown(post.generatedTitle)}
+                  </h3>
                   
                   {/* Content Section */}
                   <div className="relative mb-4">
