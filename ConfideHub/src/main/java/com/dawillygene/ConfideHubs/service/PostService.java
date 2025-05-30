@@ -1,5 +1,6 @@
 package com.dawillygene.ConfideHubs.service;
 
+import com.dawillygene.ConfideHubs.controllers.GeminiModelController;
 import com.dawillygene.ConfideHubs.model.Post;
 import com.dawillygene.ConfideHubs.model.Reaction;
 import com.dawillygene.ConfideHubs.model.User;
@@ -34,15 +35,26 @@ public class PostService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private GeminiModelController geminiModelController;
 
+    @Transactional
     public Post createPost(Post post) {
+        // Generate UUID if not provided
         if (post.getId() == null) {
             post.setId(UUID.randomUUID().toString());
         }
+        
+        // Set creation time
         post.setCreatedAt(LocalDateTime.now());
-        if (post.getExpiresAt() == null) {
-            post.setExpiresAt(LocalDateTime.now().plusDays(7));
+        
+        // Generate title using Gemini AI
+        if (post.getContent() != null && !post.getContent().isEmpty()) {
+            String generatedTitle = geminiModelController.generateTitle(post.getContent());
+            post.setGeneratedTitle(generatedTitle);
         }
+        
+        // Save and return the post
         return postRepository.save(post);
     }
 
