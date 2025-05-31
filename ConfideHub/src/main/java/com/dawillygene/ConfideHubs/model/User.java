@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,6 +23,12 @@ public class User {
     @NotBlank
     @Size(max = 20)
     private String username;
+
+    @Size(max = 50)
+    private String anonymousUsername;
+
+    @Column(nullable = true)
+    private LocalDateTime anonymousUsernameExpiresAt;
 
     @NotBlank
     @Size(max = 50)
@@ -60,6 +67,33 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getAnonymousUsername() {
+        return anonymousUsername;
+    }
+
+    public void setAnonymousUsername(String anonymousUsername) {
+        this.anonymousUsername = anonymousUsername;
+    }
+
+    public LocalDateTime getAnonymousUsernameExpiresAt() {
+        return anonymousUsernameExpiresAt;
+    }
+
+    public void setAnonymousUsernameExpiresAt(LocalDateTime anonymousUsernameExpiresAt) {
+        this.anonymousUsernameExpiresAt = anonymousUsernameExpiresAt;
+    }
+
+    /**
+     * Gets the display username - returns anonymousUsername if available, otherwise regular username
+     * @return the username to display publicly
+     */
+    public String getDisplayUsername() {
+        if (anonymousUsername != null && (anonymousUsernameExpiresAt == null || LocalDateTime.now().isBefore(anonymousUsernameExpiresAt))) {
+            return anonymousUsername;
+        }
+        return username;
     }
 
     public String getPassword() {
