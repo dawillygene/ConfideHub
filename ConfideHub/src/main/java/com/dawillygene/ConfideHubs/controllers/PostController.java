@@ -93,8 +93,12 @@ public class PostController {
     @DeleteMapping("/comments/{commentId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
-        commentService.deleteComment(commentId);
-        return ResponseEntity.ok().build();
+            boolean deleted = commentService.deleteComment(commentId);
+        if (deleted) {
+            return ResponseEntity.ok().build(); // 200 OK - Comment was successfully deleted
+        } else {
+            return ResponseEntity.noContent().build(); // 204 No Content - Comment didn't exist, but that's okay
+        }
     }
 
     @PostMapping("/{id}/react/{reactionType}")
@@ -103,3 +107,4 @@ public class PostController {
         return ResponseEntity.ok(postService.updateReaction(id, reactionType));
     }
 }
+

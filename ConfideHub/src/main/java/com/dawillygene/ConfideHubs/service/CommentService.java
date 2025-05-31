@@ -6,6 +6,8 @@ import com.dawillygene.ConfideHubs.model.User;
 import com.dawillygene.ConfideHubs.repository.CommentRepository;
 import com.dawillygene.ConfideHubs.repository.PostRepository;
 import com.dawillygene.ConfideHubs.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ import java.util.Optional;
 
 @Service
 public class CommentService {
+
+    private static final Logger logger = LoggerFactory.getLogger(CommentService.class);
 
     @Autowired
     private CommentRepository commentRepository;
@@ -59,8 +63,14 @@ public class CommentService {
         return commentRepository.findByParentIdOrderByCreatedAtAsc(parentId);
     }
 
+    /**
+     * Delete a comment by ID.
+     * @param commentId The ID of the comment to delete
+     * @return true if the comment was deleted successfully, false if the comment doesn't exist
+     * @throws org.springframework.security.access.AccessDeniedException if the user is not authorized to delete the comment
+     */
     @Transactional
-    public void deleteComment(Long commentId) {
+    public boolean deleteComment(Long commentId) {
         Optional<Comment> commentOptional = commentRepository.findById(commentId);
         if (commentOptional.isPresent()) {
             Comment comment = commentOptional.get();
@@ -69,11 +79,14 @@ public class CommentService {
                 String postId = comment.getPost().getId();
                 commentRepository.deleteById(commentId);
                 updateCommentCount(postId, -1); // Decrement comment count
+                logger.info("Comment with ID {} deleted successfully by {}", commentId, currentUsername);
+                return true;
             } else {
                 throw new org.springframework.security.access.AccessDeniedException("You are not authorized to delete this comment.");
             }
         } else {
-            throw new RuntimeException("Comment not found with id: " + commentId);
+            logger.warn("Attempted to delete non-existent comment with ID: {}", commentId);
+            return false; // Comment doesn't exist, but don't treat it as an error
         }
     }
 
@@ -86,3 +99,4 @@ public class CommentService {
                 });
     }
 }
+

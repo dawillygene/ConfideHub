@@ -68,7 +68,6 @@ const CreatePostSection = ({ openPostModal, isAnonymous, toggleAnonymous }) => {
               className="flex items-center px-4 py-2 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 text-sm font-medium transition-colors"
               onClick={(e) => {
                 e.stopPropagation();
-                // Handle category selection
               }}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">

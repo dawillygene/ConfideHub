@@ -68,6 +68,7 @@ const PostModal = ({
             </div>
 
             <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 120px)' }}>
+            
               <form onSubmit={handleCreatePost}>
                 <div className="flex items-center mb-6">
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center mr-4 ${isAnonymous ? 'bg-yellow-100/80' : 'bg-blue-100/80'}`}>
@@ -178,6 +179,9 @@ const PostModal = ({
                   </motion.button>
                 </div>
               </form>
+
+
+               
             </div>
           </motion.div>
         </motion.div>

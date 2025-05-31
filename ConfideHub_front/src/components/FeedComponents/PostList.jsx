@@ -17,7 +17,6 @@ const BORDER_STYLES = {
 };
 
 const MAX_PREVIEW_LENGTH = 100;
-const LOADING_DELAY = 500; // 0.5 second delay for better UX
 
 const PostList = ({ posts, loading, handleReaction, lastPostElementRef }) => {
   const [expandedPostId, setExpandedPostId] = useState(null);

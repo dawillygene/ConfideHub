@@ -44,24 +44,21 @@ public class GeminiModelController {
     @PostMapping("/generate-title")
     public String generateTitle(@RequestBody String content) {
         log.info("Generating title for content: {}", content.substring(0, Math.min(content.length(), 50)) + "...");
-        
-        String prompt = "Read the following story and generate the most eye-catching and emotionally resonant headline. Make it sound human, real, and attention-grabbing — like a headline you'd see on a popular blog or storytelling platform. Avoid clickbait; keep it sincere and impactful. (maximum 15 words) for this content: " + content;
-        
-        // Create the request body for Gemini API
+
+        String prompt = "Generate a single, emotionally resonant and eye-catching headline (max 15 words) for the following story. The headline must sound human and sincere, like a real blog or story title. Avoid clickbait, special characters, and additional options. Return only the headline, plain text, no punctuation at the end. Content: " + content;
+
+
+
         Map<String, Object> requestBody = new HashMap<>();
-        
-        // Create parts array
+
         Map<String, String> part = new HashMap<>();
         part.put("text", prompt);
-        
-        // Create content object
+
         Map<String, Object> contentObj = new HashMap<>();
         contentObj.put("parts", List.of(part));
-        
-        // Add contents array to request body
+
         requestBody.put("contents", List.of(contentObj));
-        
-        // Add generation config
+
         Map<String, Object> generationConfig = new HashMap<>();
         generationConfig.put("temperature", 0.7);
         generationConfig.put("maxOutputTokens", 50);
