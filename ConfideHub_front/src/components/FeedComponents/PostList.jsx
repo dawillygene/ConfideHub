@@ -125,7 +125,7 @@ const PostList = ({ posts, loading, handleReaction, lastPostElementRef }) => {
                       <i className="fas fa-hourglass-half mr-1.5"></i>
                       <span>
                         {calculateExpirationDays(post.expiresAt) === 0 ? (
-                          <span className="font-medium text-red-600">Expired</span>
+                          <span className="font-medium text-red-600">FOREVER</span>
                         ) : (
                           <>Expires in <span className="font-bold">{calculateExpirationDays(post.expiresAt)}</span> days</>
                         )}

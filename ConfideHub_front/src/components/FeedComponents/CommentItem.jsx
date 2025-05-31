@@ -125,7 +125,7 @@ const CommentItem = ({ comment, onReplyAdded, onCommentUpdated, onDeleteComment 
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <h4 className="text-sm font-semibold text-gray-800">
-                {comment.user?.username || 'Anonymous'}
+                {comment.user?.usernam || 'xomient'}
               </h4>
               <span className="text-xs text-gray-400">
                 {new Date(comment.createdAt).toLocaleDateString('en-US', {
