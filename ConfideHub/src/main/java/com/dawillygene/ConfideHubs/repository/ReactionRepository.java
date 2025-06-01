@@ -28,4 +28,8 @@ public interface ReactionRepository extends JpaRepository<Reaction, Long> {
 
     // Add index: CREATE INDEX idx_reaction_type ON reactions(reaction_type);
     List<Reaction> findByReactionType(String reactionType);
+
+    // Find all reactions of a specific type for a user
+    List<Reaction> findByUserIdAndReactionType(Long userId, String reactionType);
 }
+

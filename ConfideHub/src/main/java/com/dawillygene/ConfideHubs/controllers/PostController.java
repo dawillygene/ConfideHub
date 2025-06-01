@@ -101,6 +101,14 @@ public class PostController {
         }
     }
 
+    @GetMapping("/bookmarks")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Page<Post>> getBookmarkedPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(postService.getBookmarkedPosts(page, size));
+    }
+
     @PostMapping("/{id}/react/{reactionType}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Post> reactToPost(@PathVariable String id, @PathVariable String reactionType) {

@@ -41,12 +41,11 @@ public class Post {
 
     private LocalDateTime createdAt;
 
-    // Self-destruction settings
     @Enumerated(EnumType.STRING)
-    private ExpiryDuration expiryDuration = ExpiryDuration.NEVER; // Default to no expiry
+    private ExpiryDuration expiryDuration = ExpiryDuration.NEVER;
 
     private LocalDateTime expiresAt;
-    private Double trendingScore;
+    private Double trendingScore = (double) 0;
 
     public enum ExpiryDuration {
         HOURS_24("24h", 24),

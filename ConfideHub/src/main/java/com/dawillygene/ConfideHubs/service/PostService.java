@@ -45,45 +45,36 @@ public class PostService {
 
     @Transactional
     public Post createPost(Post post) {
-        // Generate UUID if not provided
+
         if (post.getId() == null) {
             post.setId(UUID.randomUUID().toString());
         }
 
-        // Set creation time
         post.setCreatedAt(LocalDateTime.now());
 
-        // Set the expiry date based on the selected duration
         if (post.getExpiryDuration() != null) {
             post.setExpiresAt(post.getExpiryDuration().calculateExpiryDate(post.getCreatedAt()));
         } else {
             post.setExpiryDuration(ExpiryDuration.NEVER);
-            post.setExpiresAt(null); // No expiry
+            post.setExpiresAt(null);
         }
 
-        // Get current user for userId
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Store only the userId in the post
         post.setUserId(user.getId());
 
-        // Generate a deterministic anonymous username based on post ID
-        // This ensures the same post always has the same anonymous username
         String anonymousUsername = anonymousUsernameService.generateDeterministicUsername(post.getId());
         post.setDisplayUsername(anonymousUsername);
 
-        // Generate title using Gemini AI
         if (post.getContent() != null && !post.getContent().isEmpty()) {
             String generatedTitle = geminiModelController.generateTitle(post.getContent());
             post.setGeneratedTitle(generatedTitle);
         }
 
-        // Save and return the post
         Post savedPost = postRepository.save(post);
 
-        // Make sure the display username is still set after saving
         savedPost.setDisplayUsername(anonymousUsername);
         return savedPost;
     }
@@ -100,11 +91,9 @@ public class PostService {
         }
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        // Only return non-expired posts
         LocalDateTime now = LocalDateTime.now();
         Page<Post> posts = postRepository.findNonExpiredPosts(now, pageable);
 
-        // Set deterministic display names for each post
         for (Post post : posts.getContent()) {
             String anonymousUsername = anonymousUsernameService.generateDeterministicUsername(post.getId());
             post.setDisplayUsername(anonymousUsername);
@@ -116,12 +105,10 @@ public class PostService {
     public Optional<Post> getPostById(String id) {
         Optional<Post> postOptional = postRepository.findById(id);
 
-        // If the post exists but has expired, return empty
         if (postOptional.isPresent() && postOptional.get().isExpired()) {
             return Optional.empty();
         }
 
-        // Set deterministic display name if post exists
         postOptional.ifPresent(post -> {
             String anonymousUsername = anonymousUsernameService.generateDeterministicUsername(post.getId());
             post.setDisplayUsername(anonymousUsername);
@@ -133,7 +120,7 @@ public class PostService {
     public Post updatePost(String id, Post updatedPost) {
         return postRepository.findById(id)
                 .map(existingPost -> {
-                    // Don't allow updating expired posts
+
                     if (existingPost.isExpired()) {
                         throw new RuntimeException("Cannot update an expired post");
                     }
@@ -143,7 +130,6 @@ public class PostService {
                     existingPost.setCategories(updatedPost.getCategories());
                     existingPost.setHashtags(updatedPost.getHashtags());
 
-                    // Only allow changing expiry if it wasn't set before or it's being set for the first time
                     if (existingPost.getExpiryDuration() == ExpiryDuration.NEVER && updatedPost.getExpiryDuration() != null) {
                         existingPost.setExpiryDuration(updatedPost.getExpiryDuration());
                         existingPost.setExpiresAt(updatedPost.getExpiryDuration().calculateExpiryDate(existingPost.getCreatedAt()));
@@ -151,7 +137,6 @@ public class PostService {
 
                     Post savedPost = postRepository.save(existingPost);
 
-                    // Set deterministic display name for the updated post
                     String anonymousUsername = anonymousUsernameService.generateDeterministicUsername(savedPost.getId());
                     savedPost.setDisplayUsername(anonymousUsername);
 
@@ -181,7 +166,6 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
-        // Don't allow reactions on expired posts
         if (post.isExpired()) {
             throw new RuntimeException("Cannot react to an expired post");
         }
@@ -203,7 +187,6 @@ public class PostService {
 
         Post savedPost = postRepository.save(post);
 
-        // Set deterministic display name for the post
         String anonymousUsername = anonymousUsernameService.generateDeterministicUsername(savedPost.getId());
         savedPost.setDisplayUsername(anonymousUsername);
 
@@ -215,11 +198,10 @@ public class PostService {
             case "like": post.setLikes(post.getLikes() + change); break;
             case "support": post.setSupports(post.getSupports() + change); break;
             case "comment": post.setComments(post.getComments() + change); break;
+            case "bookmark": post.setBookmarked(change > 0); break;
         }
     }
 
-    // Removed the Async annotation since we're now using deterministic generation
-    // which is fast and doesn't need to be async
     public void setRandomDisplayNames(List<Post> posts) {
         for (Post post : posts) {
             String anonymousUsername = anonymousUsernameService.generateDeterministicUsername(post.getId());
@@ -227,7 +209,6 @@ public class PostService {
         }
     }
 
-    // Run every hour to clean up expired posts and update trending scores
     @Async
     @Scheduled(fixedRate = 3600000)
     public void calculateTrendingScoresAndCleanExpiredPosts() {
@@ -235,19 +216,16 @@ public class PostService {
         LocalDateTime now = LocalDateTime.now();
 
         for (Post post : allPosts) {
-            // Check if post has expired
             if (post.getExpiresAt() != null && now.isAfter(post.getExpiresAt())) {
                 logger.info("Deleting expired post: {}", post.getId());
                 postRepository.deleteById(post.getId());
                 continue;
             }
 
-            // Update trending score for non-expired posts
             long likeCount = reactionRepository.countByPostIdAndReactionType(post.getId(), "like");
             long supportCount = reactionRepository.countByPostIdAndReactionType(post.getId(), "support");
             long commentCount = reactionRepository.countByPostIdAndReactionType(post.getId(), "comment");
 
-            // Get ZoneOffset for the current time zone
             java.time.ZoneOffset currentOffset = java.time.OffsetDateTime.now().getOffset();
 
             long nowEpochSecond = now.toEpochSecond(currentOffset);
@@ -268,5 +246,28 @@ public class PostService {
                 .map(User::getId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
-}
 
+    public Page<Post> getBookmarkedPosts(int page, int size) {
+        Long userId = getCurrentUserId();
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
+
+        // Get posts ids that are bookmarked by the current user
+        List<String> bookmarkedPostIds = reactionRepository.findByUserIdAndReactionType(userId, "bookmark")
+                .stream()
+                .map(reaction -> reaction.getPost().getId())
+                .toList();
+
+        if (bookmarkedPostIds.isEmpty()) {
+            return new PageImpl<>(List.of(), pageable, 0);
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        List<Post> bookmarkedPosts = postRepository.findByIdInAndExpiresAtIsNullOrExpiresAtAfter(
+                bookmarkedPostIds, now, pageable).getContent();
+
+        setRandomDisplayNames(bookmarkedPosts);
+        bookmarkedPosts.forEach(post -> post.setBookmarked(true));
+
+        return new PageImpl<>(bookmarkedPosts, pageable, bookmarkedPosts.size());
+    }
+}

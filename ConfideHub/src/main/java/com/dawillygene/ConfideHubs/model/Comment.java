@@ -1,4 +1,3 @@
-// com/dawillygene/ConfideHubs/model/Comment.java
 package com.dawillygene.ConfideHubs.model;
 
 import jakarta.persistence.*;

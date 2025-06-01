@@ -12,12 +12,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class RecommendationService {
+
+    private static final Logger logger = LoggerFactory.getLogger(RecommendationService.class); // Add logger
 
     private final PostRepository postRepository;
     private final ReactionRepository reactionRepository;
@@ -68,10 +72,21 @@ public class RecommendationService {
     protected Map<Long, Map<String, Integer>> getUserPostInteractionMatrix() {
         List<Reaction> allReactions = reactionRepository.findAll();
         Map<Long, Map<String, Integer>> interactionMatrix = new HashMap<>();
+
         for (Reaction reaction : allReactions) {
+            // Skip reactions with null user or post
+            if (reaction.getUser() == null || reaction.getPost() == null) {
+                continue;
+            }
+
             Long userId = reaction.getUser().getId();
             String postId = reaction.getPost().getId();
             String reactionType = reaction.getReactionType();
+
+            if (userId == null || postId == null || reactionType == null) {
+                continue;
+            }
+
             int weight = getReactionWeight(reactionType);
             interactionMatrix.computeIfAbsent(userId, k -> new HashMap<>())
                     .put(postId, interactionMatrix.get(userId).getOrDefault(postId, 0) + weight);
@@ -140,12 +155,32 @@ public class RecommendationService {
         List<Reaction> allReactions = reactionRepository.findAll();
         Map<Long, Set<String>> userPreferences = new HashMap<>();
         for (Reaction reaction : allReactions) {
+            if (reaction == null) { // Check if reaction object itself is null
+                logger.warn("Encountered a null reaction object. Skipping.");
+                continue;
+            }
             if (isPositiveReaction(reaction.getReactionType())) {
-                Long userId = reaction.getUser().getId();
+                User user = reaction.getUser();
+                // Add null check for user and user ID
+                if (user == null || user.getId() == null) {
+                    logger.warn("Reaction {} has a null user or user with null ID. Skipping.", reaction.getId());
+                    continue;
+                }
+                Long userId = user.getId();
                 Post post = reaction.getPost();
+                // Add null check for post and post ID
+                if (post == null || post.getId() == null) {
+                    logger.warn("Reaction {} for user {} has a null post or post with null ID. Skipping.", reaction.getId(), userId);
+                    continue;
+                }
+                // At this point, post and post.getId() are confirmed not null.
                 Set<String> keywords = new HashSet<>();
-                if (post.getCategories() != null) keywords.addAll(post.getCategories());
-                if (post.getHashtags() != null) keywords.addAll(post.getHashtags());
+                if (post.getCategories() != null) {
+                    keywords.addAll(post.getCategories());
+                }
+                if (post.getHashtags() != null) {
+                    keywords.addAll(post.getHashtags());
+                }
                 userPreferences.computeIfAbsent(userId, k -> new HashSet<>()).addAll(keywords);
             }
         }
@@ -156,9 +191,18 @@ public class RecommendationService {
         List<Post> allPosts = postRepository.findAll();
         Map<String, Set<String>> postFeatures = new HashMap<>();
         for (Post post : allPosts) {
+            // Add null check for post and its ID
+            if (post == null || post.getId() == null) {
+                logger.warn("Encountered a null post or post with null ID in findAll result. Skipping.");
+                continue;
+            }
             Set<String> keywords = new HashSet<>();
-            if (post.getCategories() != null) keywords.addAll(post.getCategories());
-            if (post.getHashtags() != null) keywords.addAll(post.getHashtags());
+            if (post.getCategories() != null) {
+                keywords.addAll(post.getCategories());
+            }
+            if (post.getHashtags() != null) {
+                keywords.addAll(post.getHashtags());
+            }
             postFeatures.put(post.getId(), keywords);
         }
         return postFeatures;
@@ -237,3 +281,4 @@ public class RecommendationService {
         // Cache will be cleared automatically
     }
 }
+

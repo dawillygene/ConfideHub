@@ -1,165 +1,77 @@
-package com.dawillygene.ConfideHubs.model;
+package com.dawillygene.ConfideHubs.DTO;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import com.dawillygene.ConfideHubs.model.User;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-@Entity
-@Table(name = "users",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "username"),
-                @UniqueConstraint(columnNames = "email")
-        })
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @NotBlank
-    @Size(max = 20)
+/**
+ * DTO for transferring profile information to the client
+ */
+public class ProfileDTO {
     private String username;
-
-    @Size(max = 50)
-    private String anonymousUsername;
-
-    @Column(nullable = true)
-    private LocalDateTime anonymousUsernameExpiresAt;
-
-    @NotBlank
-    @Size(max = 50)
     private String email;
-
-    @NotBlank
-    @Size(max = 150)
-    private String password;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
-
-    // Additional profile fields
-    @Size(max = 100)
     private String fullname;
-
-    @Size(max = 20)
     private String phone;
-
-    @Size(max = 100)
     private String location;
-
-    @Size(max = 200)
     private String website;
-
-    @Column(columnDefinition = "TEXT")
     private String bio;
-
-    @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> interests = new HashSet<>();
-
-    // Social media profiles
-    @Size(max = 50)
+    private Set<String> roles = new HashSet<>();
     private String twitter;
-
-    @Size(max = 50)
     private String linkedin;
-
-    @Size(max = 50)
     private String github;
-
-    @Size(max = 50)
     private String instagram;
-
-    // Privacy settings
-    private boolean privacyEmail = true;
-    private boolean privacyPhone = false;
-    private boolean privacyPosts = true;
-
-    // Notification settings
-    private boolean notifyPosts = true;
-    private boolean notifyMessages = true;
-    private boolean notifyFollowers = true;
-    private boolean notifyNews = false;
-
-    // Profile picture URL
-    @Size(max = 255)
+    private boolean privacyEmail;
+    private boolean privacyPhone;
+    private boolean privacyPosts;
+    private boolean notifyPosts;
+    private boolean notifyMessages;
+    private boolean notifyFollowers;
+    private boolean notifyNews;
     private String profilePictureUrl;
+    private int profileCompletionPercentage;
 
-    // Profile completion percentage
-    private int profileCompletionPercentage = 0;
-
-    public User() {
+    // Empty constructor
+    public ProfileDTO() {
     }
 
-    public User(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
+    // Constructor from User entity
+    public ProfileDTO(User user) {
+        this.username = user.getUsername();
+        this.email = user.getEmail();
+        this.fullname = user.getFullname();
+        this.phone = user.getPhone();
+        this.location = user.getLocation();
+        this.website = user.getWebsite();
+        this.bio = user.getBio();
+        this.interests = user.getInterests();
+        this.roles = user.getRoles().stream()
+                .map(role -> role.getName().name())
+                .collect(Collectors.toSet());
+        this.twitter = user.getTwitter();
+        this.linkedin = user.getLinkedin();
+        this.github = user.getGithub();
+        this.instagram = user.getInstagram();
+        this.privacyEmail = user.isPrivacyEmail();
+        this.privacyPhone = user.isPrivacyPhone();
+        this.privacyPosts = user.isPrivacyPosts();
+        this.notifyPosts = user.isNotifyPosts();
+        this.notifyMessages = user.isNotifyMessages();
+        this.notifyFollowers = user.isNotifyFollowers();
+        this.notifyNews = user.isNotifyNews();
+        this.profilePictureUrl = user.getProfilePictureUrl();
+        this.profileCompletionPercentage = user.getProfileCompletionPercentage();
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    // Getters and setters
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getAnonymousUsername() {
-        return anonymousUsername;
-    }
-
-    public void setAnonymousUsername(String anonymousUsername) {
-        this.anonymousUsername = anonymousUsername;
-    }
-
-    public LocalDateTime getAnonymousUsernameExpiresAt() {
-        return anonymousUsernameExpiresAt;
-    }
-
-    public void setAnonymousUsernameExpiresAt(LocalDateTime anonymousUsernameExpiresAt) {
-        this.anonymousUsernameExpiresAt = anonymousUsernameExpiresAt;
-    }
-
-    /**
-     * Gets the display username - returns anonymousUsername if available, otherwise regular username
-     * @return the username to display publicly
-     */
-    public String getDisplayUsername() {
-        if (anonymousUsername != null && (anonymousUsernameExpiresAt == null || LocalDateTime.now().isBefore(anonymousUsernameExpiresAt))) {
-            return anonymousUsername;
-        }
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
     }
 
     public String getEmail() {
@@ -216,6 +128,14 @@ public class User {
 
     public void setInterests(Set<String> interests) {
         this.interests = interests;
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 
     public String getTwitter() {

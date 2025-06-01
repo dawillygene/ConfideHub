@@ -1,0 +1,223 @@
+package com.dawillygene.ConfideHubs.DTO;
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class ProfileUpdateDTO {
+    private String username;
+    private String email;
+    private String fullname;
+    private String phone;
+    private String location;
+    private String website;
+    private String bio;
+    private Set<String> interests = new HashSet<>();
+    private Set<String> roles = new HashSet<>();
+
+    // Social media
+    private String twitter;
+    private String linkedin;
+    private String github;
+    private String instagram;
+
+    // Privacy settings
+    private boolean privacyEmail;
+    private boolean privacyPhone;
+    private boolean privacyPosts;
+
+    // Notification settings
+    private boolean notifyPosts;
+    private boolean notifyMessages;
+    private boolean notifyFollowers;
+    private boolean notifyNews;
+
+    // Password change
+    private String currentPassword;
+    private String newPassword;
+    private String confirmPassword;
+
+    // Getters and setters
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public Set<String> getInterests() {
+        return interests;
+    }
+
+    public void setInterests(Set<String> interests) {
+        this.interests = interests;
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
+    }
+
+    public String getTwitter() {
+        return twitter;
+    }
+
+    public void setTwitter(String twitter) {
+        this.twitter = twitter;
+    }
+
+    public String getLinkedin() {
+        return linkedin;
+    }
+
+    public void setLinkedin(String linkedin) {
+        this.linkedin = linkedin;
+    }
+
+    public String getGithub() {
+        return github;
+    }
+
+    public void setGithub(String github) {
+        this.github = github;
+    }
+
+    public String getInstagram() {
+        return instagram;
+    }
+
+    public void setInstagram(String instagram) {
+        this.instagram = instagram;
+    }
+
+    public boolean isPrivacyEmail() {
+        return privacyEmail;
+    }
+
+    public void setPrivacyEmail(boolean privacyEmail) {
+        this.privacyEmail = privacyEmail;
+    }
+
+    public boolean isPrivacyPhone() {
+        return privacyPhone;
+    }
+
+    public void setPrivacyPhone(boolean privacyPhone) {
+        this.privacyPhone = privacyPhone;
+    }
+
+    public boolean isPrivacyPosts() {
+        return privacyPosts;
+    }
+
+    public void setPrivacyPosts(boolean privacyPosts) {
+        this.privacyPosts = privacyPosts;
+    }
+
+    public boolean isNotifyPosts() {
+        return notifyPosts;
+    }
+
+    public void setNotifyPosts(boolean notifyPosts) {
+        this.notifyPosts = notifyPosts;
+    }
+
+    public boolean isNotifyMessages() {
+        return notifyMessages;
+    }
+
+    public void setNotifyMessages(boolean notifyMessages) {
+        this.notifyMessages = notifyMessages;
+    }
+
+    public boolean isNotifyFollowers() {
+        return notifyFollowers;
+    }
+
+    public void setNotifyFollowers(boolean notifyFollowers) {
+        this.notifyFollowers = notifyFollowers;
+    }
+
+    public boolean isNotifyNews() {
+        return notifyNews;
+    }
+
+    public void setNotifyNews(boolean notifyNews) {
+        this.notifyNews = notifyNews;
+    }
+
+    public String getCurrentPassword() {
+        return currentPassword;
+    }
+
+    public void setCurrentPassword(String currentPassword) {
+        this.currentPassword = currentPassword;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
+}
