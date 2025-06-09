@@ -1,0 +1,8 @@
+promps:
+i want you create a service and other coponent to make sure we get api with
+ data  that will make sure user is able to get only all the list of posts he/she
+  makes and be able to edit them,delete ,update and perform all crud on it...
+  and all changes you will make create
+ a file called progress.md track and store all data changes as  documentation
+
+ and aslo gimme the docuentation of the api you have created

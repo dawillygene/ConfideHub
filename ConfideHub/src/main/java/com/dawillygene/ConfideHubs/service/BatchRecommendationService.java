@@ -29,7 +29,7 @@ public class BatchRecommendationService {
     private final Map<Long, List<Post>> precomputedRecommendations = new ConcurrentHashMap<>();
 
     @Scheduled(fixedRate = 1800000) // Run every 30 minutes
-    // Removed @Transactional annotation
+
     public void precomputeRecommendations() {
         try {
             List<User> allUsers = userRepository.findAll();
@@ -48,7 +48,6 @@ public class BatchRecommendationService {
                         logger.warn("Skipping recommendation processing for null user or user with null ID");
                     }
                 } catch (Exception e) {
-                    // Log error but continue processing other users
                     logger.error("Error precomputing recommendations for user {}: {}",
                             user != null ? user.getId() : "null", e.getMessage());
                 }
@@ -56,7 +55,6 @@ public class BatchRecommendationService {
 
             logger.info("Finished precomputation of recommendations");
         } catch (Exception e) {
-            // Catch all exceptions at the top level to prevent scheduled task from failing
             logger.error("Unexpected error in recommendation precomputation task: {}", e.getMessage(), e);
         }
     }
@@ -74,7 +72,6 @@ public class BatchRecommendationService {
                 recommendations = recommendationService.getRecommendedPosts(user.getId(), 20);
             } catch (Exception e) {
                 logger.error("Error getting recommendations for user {}: {}", user.getId(), e.getMessage());
-                // Continue with empty recommendations
             }
 
             precomputedRecommendations.put(user.getId(), recommendations);
@@ -83,7 +80,6 @@ public class BatchRecommendationService {
         } catch (Exception e) {
             logger.error("Error processing recommendations for user {}: {}",
                     user != null ? user.getId() : "null", e.getMessage());
-            // Store an empty list to prevent repeated failures
             if (user != null && user.getId() != null) {
                 precomputedRecommendations.put(user.getId(), Collections.emptyList());
             }
@@ -103,7 +99,6 @@ public class BatchRecommendationService {
                     .collect(java.util.stream.Collectors.toList());
         }
 
-        // Fallback to real-time computation
         try {
             return recommendationService.getRecommendedPosts(userId, limit);
         } catch (Exception e) {

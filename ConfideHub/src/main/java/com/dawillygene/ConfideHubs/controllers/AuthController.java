@@ -72,7 +72,7 @@ public class AuthController {
     private int jwtRefreshExpirationMs;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest, HttpServletResponse response) { // Added HttpServletResponse
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest, HttpServletResponse response) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
         }
@@ -114,7 +114,7 @@ public class AuthController {
         String refreshToken = refreshTokenService.createRefreshToken(user.getId()).getToken();
 
         // Set cookies
-        CookieUtils.setHttpOnlyCookie(response, "accessToken", accessToken, jwtExpirationMs / 1000, false); // convert to seconds
+        CookieUtils.setHttpOnlyCookie(response, "accessToken", accessToken, jwtExpirationMs / 1000, false);
         CookieUtils.setHttpOnlyCookie(response, "refreshToken", refreshToken, jwtRefreshExpirationMs / 1000, false);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));

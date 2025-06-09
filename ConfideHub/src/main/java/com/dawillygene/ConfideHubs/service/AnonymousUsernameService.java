@@ -9,50 +9,50 @@ import java.util.Random;
 public class AnonymousUsernameService {
 
     private static final List<String> ADJECTIVES = Arrays.asList(
-            "Kimya",         // Swahili: Silent
-            "Fiche",         // Swahili: Hidden
-            "Siri",          // Swahili: Secret
-            "Mpole",         // Swahili: Calm/Gentle
-            "Nyuma",         // Swahili: Behind
-            "Waziwazi",      // Swahili: Subtle
-            "Obscuro",       // Spanish: Obscure
-            "Silencieux",    // French: Silent
-            "Clandestino",   // Spanish: Clandestine
-            "Tihka",         // Arabic: Mysterious
-            "Kivuli",        // Swahili: Shadowed
-            "Lointain",      // French: Distant
-            "Latente",       // Italian/Spanish: Latent
-            "Incognito",     // Latin: Unknown
-            "Hafifu",        // Swahili: Dim
-            "Veiled",        // English: Covered/Hidden
+            "Kimya",
+            "Fiche",
+            "Siri",
+            "Mpole",
+            "Nyuma",
+            "Waziwazi",
+            "Obscuro",
+            "Silencieux",
+            "Clandestino",
+            "Tihka",
+            "Kivuli",
+            "Lointain",
+            "Latente",
+            "Incognito",
+            "Hafifu",
+            "Veiled",
             "Silent",
             "Hidden",
             "Dusky",
-            "Cicha"          // Swahili: Quiet/Whispered
+            "Cicha"
     );
 
 
     private static final List<String> NOUNS = Arrays.asList(
-            "Mgeni",         // Swahili: Stranger/Guest
-            "Roho",          // Swahili: Spirit
-            "Mzuka",         // Swahili: Ghost
-            "Sauti",         // Swahili: Voice
-            "Upepo",         // Swahili: Wind
-            "Wingu",         // Swahili: Cloud
-            "Silhouette",    // French/English
-            "Eco",           // Spanish: Echo
-            "Nocturne",      // French: Night-themed
-            "Sombras",       // Spanish: Shadows
-            "Voyageur",      // French: Traveler
-            "Njia",          // Swahili: Path
-            "Malaika",       // Swahili: Angel
+            "Mgeni",
+            "Roho",
+            "Mzuka",
+            "Sauti",
+            "Upepo",
+            "Wingu",
+            "Silhouette",
+            "Eco",
+            "Nocturne",
+            "Sombras",
+            "Voyageur",
+            "Njia",
+            "Malaika",
             "Nomad",
             "Watcher",
             "Drifter",
             "Echo",
             "Phantom",
             "Stranger",
-            "Mwitu"          // Swahili: Wilderness
+            "Mwitu"
     );
 
     /**
