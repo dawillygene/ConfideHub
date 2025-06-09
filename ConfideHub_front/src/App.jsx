@@ -10,6 +10,7 @@ import ProtectedRoute from './Context/ProtectedRoute';
 import AppProvider from './Context/AppProvider';
 import ForYou from './feeds/ForYou';
 import Profile from './components/Profile/Profile';
+import UserPosts from './components/Profile/UserPosts';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
                 <Routes> {/* Nested Routes */}
                   <Route path="/" element={<Home />} />
                   <Route path="/profile" element={<Profile />} />
+                  <Route path="/profile/posts" element={<UserPosts />} />
                   <Route path="/about" />
                   <Route path="/fyp" element={<ForYou />} />
                   <Route path="/feed" element={<FeedsTest />} />
