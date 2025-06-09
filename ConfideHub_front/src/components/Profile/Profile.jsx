@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import ProfileDetails from './ProfileDetails'
 import EditProfile from './EditProfile';
 import Sidebar from '../FeedComponents/Sidebar';
+import RightSidebar from '../FeedComponents/RightSidebar';
 
 const Profile = () => {
   const location = useLocation();
@@ -50,6 +51,8 @@ const Profile = () => {
             </div>
           )}
         </div>
+
+        <RightSidebar />
       </div>
     </>
   )

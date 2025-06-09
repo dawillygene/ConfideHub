@@ -6,6 +6,8 @@ import com.dawillygene.ConfideHubs.model.Post.ExpiryDuration;
 import com.dawillygene.ConfideHubs.model.User;
 import com.dawillygene.ConfideHubs.repository.PostRepository;
 import com.dawillygene.ConfideHubs.repository.UserRepository;
+import com.dawillygene.ConfideHubs.repository.CommentRepository;
+import com.dawillygene.ConfideHubs.repository.ReactionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,12 @@ public class UserPostService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private ReactionRepository reactionRepository;
 
     @Autowired
     private AnonymousUsernameService anonymousUsernameService;
@@ -187,9 +195,23 @@ public class UserPostService {
         Long currentUserId = getCurrentUserId();
         
         if (postRepository.existsByIdAndUserId(postId, currentUserId)) {
-            postRepository.deleteById(postId);
-            logger.info("Deleted post with ID: {} for user: {}", postId, getCurrentUser().getUsername());
-            return true;
+            try {
+                // First, delete all reactions associated with this post to avoid foreign key constraint violations
+                logger.info("Deleting reactions for post with ID: {}", postId);
+                reactionRepository.deleteByPostId(postId);
+                
+                // Second, delete all comments associated with this post to avoid foreign key constraint violations
+                logger.info("Deleting comments for post with ID: {}", postId);
+                commentRepository.deleteByPostId(postId);
+                
+                // Finally, delete the post itself
+                postRepository.deleteById(postId);
+                logger.info("Deleted post with ID: {} for user: {}", postId, getCurrentUser().getUsername());
+                return true;
+            } catch (Exception e) {
+                logger.error("Error deleting post with ID: {} - {}", postId, e.getMessage());
+                throw new RuntimeException("Failed to delete post: " + e.getMessage());
+            }
         } else {
             throw new RuntimeException("Post not found or you don't have permission to delete it");
         }

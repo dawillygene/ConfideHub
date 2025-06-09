@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { AppContext } from '../../Context/AppProvider';
 import Sidebar from '../FeedComponents/Sidebar';
 import RightSidebar from '../FeedComponents/RightSidebar';
@@ -298,6 +299,19 @@ const UserPosts = () => {
       <Sidebar />
       
       <div className="main-content w-full md:w-2/4">
+        {/* Breadcrumb Navigation */}
+        <div className="flex items-center mb-4 text-sm text-gray-600">
+          <Link 
+            to="/profile" 
+            className="hover:text-blue-600 transition-colors flex items-center"
+          >
+            <i className="fas fa-arrow-left mr-2"></i>
+            Back to Profile
+          </Link>
+          <span className="mx-2">•</span>
+          <span className="text-gray-800 font-medium">My Posts</span>
+        </div>
+
         {/* Header Section */}
         <div className="bg-white rounded-lg shadow p-6 mb-6">
           <div className="flex justify-between items-center mb-4">

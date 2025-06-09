@@ -1,7 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const ConfessionFeed = () => {
-  // Store confession data in a constant
+  // Store confession data in a constant - keeping only 3-4 best examples for homepage preview
   const confessions = [
     {
       id: 1,
@@ -20,7 +21,7 @@ const ConfessionFeed = () => {
     {
       id: 2,
       category: 'secondary',
-      categoryName: 'Relationships',
+      categoryName: 'Relationships', 
       username: 'Anonymous_User42J',
       time: '5 hours ago',
       content: 'I\'m thinking of breaking up with my partner of 3 years. We\'ve grown apart and want different things, but I\'m scared of being alone again.',
@@ -50,65 +51,36 @@ const ConfessionFeed = () => {
       ],
       pollVotes: 38,
       pollEndDate: '5 days'
-    },
-    {
-      id: 4,
-      category: 'primary',
-      categoryName: 'Mental Health',
-      username: 'Anonymous_User34K',
-      time: '3 days ago',
-      content: 'I can\'t stop procrastinating on important tasks. It\'s affecting my studies and I\'m falling behind. How do I break this cycle?',
-      likes: 42,
-      comments: 8,
-      hugs: 27,
-      selfDestruct: 'Never',
-      hasProfessionalAdvice: true,
-      adviceContent: 'Procrastination often stems from perfectionism or feeling overwhelmed. Try breaking tasks into smaller, manageable chunks and use the Pomodoro technique (25 min work, 5 min break). Also, consider if there are underlying anxiety issues that might benefit from professional support.'
-    },
-    {
-      id: 5,
-      category: 'secondary',
-      categoryName: 'Family Issues',
-      username: 'Anonymous_User56P',
-      time: '4 days ago',
-      content: 'My parents don\'t approve of my career choice. They want me to be a doctor, but I\'m passionate about music. I feel torn between my dreams and their expectations.',
-      likes: 31,
-      comments: 15,
-      hugs: 29,
-      selfDestruct: '3 days'
-    },
-    {
-      id: 6,
-      category: 'tertiary',
-      categoryName: 'invalid+ Safe Space',
-      username: 'Anonymous_User63M',
-      time: '1 week ago',
-      content: 'I came out to my best friend yesterday, and their supportive reaction brought me to tears. For the first time, I feel like I can be myself around someone.',
-      likes: 87,
-      comments: 23,
-      hugs: 64,
-      selfDestruct: 'Never'
     }
   ];
 
   return (
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-800">Recent Confessions</h2>
-          <div className="flex items-center">
-            <span className="mr-2 text-gray-600">Sort by:</span>
-            <select className="border border-gray-300 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-primary">
-              <option>Most Recent</option>
-              <option>Most Supported</option>
-              <option>Most Commented</option>
-            </select>
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">See What Others Are Sharing</h2>
+          <p className="text-gray-600 mb-6">Get a glimpse of our supportive community</p>
+          <div className="flex justify-center gap-4 mb-8">
+            <Link 
+              to="/feed" 
+              className="px-6 py-3 bg-primary text-white rounded-full hover:bg-primary-dark transition duration-300"
+            >
+              <i className="fas fa-stream mr-2"></i>
+              Explore All Posts
+            </Link>
+            <Link 
+              to="/fyp" 
+              className="px-6 py-3 bg-white border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition duration-300"
+            >
+              <i className="fas fa-heart mr-2"></i>
+              For You Feed
+            </Link>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {confessions.map((confession) => (
-            <div key={confession.id} className="confession-card bg-white rounded-lg shadow-md overflow-hidden">
+            <div key={confession.id} className="confession-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
                   <div>
@@ -120,7 +92,7 @@ const ConfessionFeed = () => {
                   <span className="text-xs text-gray-500">{confession.time}</span>
                 </div>
 
-                <p className="text-gray-700 mb-4">{confession.content}</p>
+                <p className="text-gray-700 mb-4 line-clamp-3">{confession.content}</p>
 
                 {confession.hasPoll && (
                   <div className="bg-gray-100 p-3 rounded-lg mb-4">
@@ -156,57 +128,48 @@ const ConfessionFeed = () => {
                   </div>
                 )}
 
-                {confession.hasProfessionalAdvice && (
-                  <div className="mb-4 bg-blue-50 p-4 rounded-lg border border-primary border-opacity-20">
-                    <div className="flex items-center mb-2">
-                      <i className="fas fa-user-md text-primary mr-2"></i>
-                      <span className="font-medium">Professional Advice</span>
-                      <span className="ml-2 px-2 py-0.5 bg-primary text-white text-xs rounded-full">Verified</span>
-                    </div>
-                    <p className="text-gray-700 text-sm">{confession.adviceContent}</p>
-                  </div>
-                )}
-
                 <div className="flex space-x-4 mb-4">
-                  <button className="flex items-center text-gray-600 hover:text-red-500 transition">
+                  <div className="flex items-center text-gray-600">
                     <i className="far fa-heart mr-1"></i>
                     <span>{confession.likes}</span>
-                  </button>
-                  <button className="flex items-center text-gray-600 hover:text-primary transition">
+                  </div>
+                  <div className="flex items-center text-gray-600">
                     <i className="far fa-comment mr-1"></i>
                     <span>{confession.comments}</span>
-                  </button>
-                  <button className="flex items-center text-gray-600 hover:text-yellow-500 transition">
-                    <i className="far fa-hug mr-1"></i>
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <i className="fas fa-hands-helping mr-1"></i>
                     <span>{confession.hugs}</span>
-                  </button>
+                  </div>
                 </div>
 
                 <div className="text-sm text-gray-500">Self-destructs in: {confession.selfDestruct}</div>
-              </div>
-
-              <div className="bg-gray-50 p-4 border-t border-gray-100">
-                <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                    <i className="fas fa-user text-gray-500 text-xs"></i>
-                  </div>
-                  <div className="flex-grow">
-                    <input
-                      type="text"
-                      className="w-full p-2 bg-white border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                      placeholder="Share your support..."
-                    />
-                  </div>
-                </div>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="mt-10 text-center">
-          <button className="px-6 py-3 bg-white border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition duration-300">
-            Load More Confessions
-          </button>
+        <div className="text-center">
+          <div className="bg-white rounded-lg shadow-md p-8 max-w-2xl mx-auto">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">Ready to Share Your Story?</h3>
+            <p className="text-gray-600 mb-6">Join thousands of others in our safe, anonymous community</p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link 
+                to="/confessions/new" 
+                className="px-8 py-3 bg-primary text-white rounded-full hover:bg-primary-dark transition duration-300 font-medium"
+              >
+                <i className="fas fa-pen-alt mr-2"></i>
+                Share Your Confession
+              </Link>
+              <Link 
+                to="/feed" 
+                className="px-8 py-3 bg-white border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition duration-300 font-medium"
+              >
+                <i className="fas fa-eye mr-2"></i>
+                Browse All Posts
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </section>

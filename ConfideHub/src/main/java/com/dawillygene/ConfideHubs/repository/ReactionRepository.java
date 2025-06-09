@@ -2,9 +2,11 @@ package com.dawillygene.ConfideHubs.repository;
 
 import com.dawillygene.ConfideHubs.model.Reaction;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +30,11 @@ public interface ReactionRepository extends JpaRepository<Reaction, Long> {
 
     // Add index: CREATE INDEX idx_reaction_type ON reactions(reaction_type);
     List<Reaction> findByReactionType(String reactionType);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Reaction r WHERE r.post.id = :postId")
+    void deleteByPostId(@Param("postId") String postId);
 
     // Find all reactions of a specific type for a user
     List<Reaction> findByUserIdAndReactionType(Long userId, String reactionType);
