@@ -299,6 +299,141 @@ Authorization: Bearer your_jwt_token
 }
 ```
 
+---
+
+# Bookmarks API Documentation
+
+## Base URL
+All bookmark endpoints are prefixed with: `/api/posts`
+
+## Authentication
+All endpoints require valid JWT authentication. Include the token in the Authorization header:
+```
+Authorization: Bearer <your_jwt_token>
+```
+
+## Endpoints
+
+### 1. Get Bookmarked Posts
+**GET** `/api/posts/bookmarks`
+
+Retrieve a paginated list of posts that have been bookmarked by the authenticated user.
+
+**Query Parameters:**
+- `page` (optional, default: 0) - Page number (0-based)
+- `size` (optional, default: 10) - Number of posts per page
+
+**Example Request:**
+```http
+GET /api/posts/bookmarks?page=0&size=10
+Authorization: Bearer your_jwt_token
+```
+
+**Response:**
+```json
+{
+  "content": [
+    {
+      "id": "bookmarked-post-id-1",
+      "title": "Interesting Post I Saved",
+      "generatedTitle": "AI Generated Title",
+      "content": "This is a post I found interesting and bookmarked...",
+      "categories": ["Technology", "Programming"],
+      "hashtags": ["bookmark", "saved", "interesting"],
+      "likes": 25,
+      "supports": 12,
+      "comments": 8,
+      "bookmarked": true,
+      "createdAt": "2025-06-09T14:30:00",
+      "expiryDuration": "DAYS_7",
+      "expiresAt": "2025-06-16T14:30:00",
+      "trendingScore": 78.5,
+      "displayUsername": "anonymous_user_456",
+      "expired": false
+    },
+    {
+      "id": "bookmarked-post-id-2",
+      "title": "Another Saved Post",
+      "generatedTitle": "Another AI Title",
+      "content": "Another post that I bookmarked for later reading...",
+      "categories": ["Personal"],
+      "hashtags": ["thoughts", "inspiration"],
+      "likes": 18,
+      "supports": 9,
+      "comments": 4,
+      "bookmarked": true,
+      "createdAt": "2025-06-08T09:15:00",
+      "expiryDuration": "NEVER",
+      "expiresAt": null,
+      "trendingScore": 45.2,
+      "displayUsername": "anonymous_user_789",
+      "expired": false
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 10
+  },
+  "totalElements": 15,
+  "totalPages": 2,
+  "last": false,
+  "first": true
+}
+```
+
+### 2. Bookmark/Unbookmark a Post
+**POST** `/api/posts/{postId}/react/bookmark`
+
+Toggle the bookmark status of a specific post. If the post is not bookmarked, it will be bookmarked. If it's already bookmarked, it will be unbookmarked.
+
+**Path Parameters:**
+- `postId` (required) - The unique identifier of the post to bookmark/unbookmark
+
+**Example Request:**
+```http
+POST /api/posts/abc123-def456-ghi789/react/bookmark
+Authorization: Bearer your_jwt_token
+```
+
+**Response:**
+```json
+{
+  "id": "abc123-def456-ghi789",
+  "title": "Post Title",
+  "generatedTitle": "AI Generated Title",
+  "content": "Post content...",
+  "categories": ["Technology"],
+  "hashtags": ["example"],
+  "likes": 15,
+  "supports": 8,
+  "comments": 3,
+  "bookmarked": true,
+  "createdAt": "2025-06-09T10:30:00",
+  "expiryDuration": "HOURS_24",
+  "expiresAt": "2025-06-10T10:30:00",
+  "trendingScore": 45.2,
+  "displayUsername": "anonymous_user_123",
+  "expired": false
+}
+```
+
+## Key Features
+
+### Bookmarks vs User Posts
+- **User Posts API** (`/api/user/posts`) - Manages posts **created by** the authenticated user
+- **Bookmarks API** (`/api/posts/bookmarks`) - Retrieves posts **bookmarked by** the authenticated user
+
+### Important Notes
+1. **Cross-User Bookmarking**: Users can bookmark posts created by any user (including their own)
+2. **Automatic Filtering**: Only non-expired posts are returned in bookmark listings
+3. **Bookmark Status**: All posts in the bookmarks API have `"bookmarked": true`
+4. **Real-time Updates**: Bookmark status is updated immediately when toggled
+
+### Security Features
+1. **Authentication Required**: All bookmark endpoints require valid JWT authentication
+2. **User Isolation**: Users can only see their own bookmarked posts
+3. **Privacy Protection**: Anonymous usernames are maintained for post authors
+
 ## Error Responses
 
 ### 401 Unauthorized
@@ -310,37 +445,77 @@ When authentication token is missing or invalid:
 }
 ```
 
-### 403 Forbidden
-When user tries to access posts they don't own:
-```json
-{
-  "error": "Forbidden",
-  "message": "Access denied"
-}
-```
-
 ### 404 Not Found
-When requested post doesn't exist or doesn't belong to user:
+When trying to bookmark a post that doesn't exist:
 ```json
 {
   "error": "Not Found",
-  "message": "Post not found or you don't have permission to access it"
+  "message": "Post not found"
 }
 ```
 
 ### 400 Bad Request
-When request data is invalid:
+When request is malformed:
 ```json
 {
   "error": "Bad Request",
-  "message": "Content is required",
-  "details": "Validation failed for field 'content'"
+  "message": "Invalid post ID format"
 }
 ```
+
+## Example Usage Scenarios
+
+### Getting All Bookmarked Posts
+```javascript
+const response = await fetch('/api/posts/bookmarks?page=0&size=20', {
+  headers: {
+    'Authorization': 'Bearer ' + userToken
+  }
+});
+const bookmarkedPosts = await response.json();
+```
+
+### Bookmarking a Post
+```javascript
+const response = await fetch(`/api/posts/${postId}/react/bookmark`, {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer ' + userToken
+  }
+});
+const updatedPost = await response.json();
+console.log('Bookmark status:', updatedPost.bookmarked);
+```
+
+### Removing a Bookmark
+```javascript
+// Same endpoint - it toggles the bookmark status
+const response = await fetch(`/api/posts/${postId}/react/bookmark`, {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer ' + userToken
+  }
+});
+const updatedPost = await response.json();
+// If it was bookmarked, it's now unbookmarked
+```
+
+---
+
+# Complete API Overview
+
+## Summary of Available APIs
+
+| API Category | Base URL | Purpose | Key Features |
+|--------------|----------|---------|--------------|
+| **User Posts** | `/api/user/posts` | Manage your own posts | Full CRUD operations, statistics, ownership validation |
+| **Bookmarks** | `/api/posts/bookmarks` | Manage saved posts | View bookmarked posts, toggle bookmark status |
+| **General Posts** | `/api/posts` | Public post operations | View all posts, comments, reactions |
 
 ## Rate Limiting
 - Maximum 100 requests per minute per user
 - Maximum 10 posts created per hour per user
+- Maximum 50 bookmark toggles per hour per user
 
 ## Notes
 1. All timestamps are in ISO 8601 format (UTC)
@@ -349,6 +524,26 @@ When request data is invalid:
 4. AI-generated titles are created automatically when content is provided
 5. Anonymous usernames are generated deterministically for each post
 6. All operations are logged for security and auditing purposes
+
+## Additional Security Requirements Needed:
+
+### Identity Protection:
+- Implement IP address masking/anonymization
+- Add explicit policies against location tracking
+- Use cryptographically secure anonymous username generation
+- Implement zero-knowledge architecture where possible
+
+### Secure Storage:
+- Use cryptographic deletion methods (not just database removal)
+- Implement secure key destruction for expired content
+- Minimize or eliminate operation logging that could compromise anonymity
+- Add explicit third-party data sharing prohibitions
+
+### Documentation Updates:
+- Add privacy policy section to API documentation
+- Specify data retention and deletion policies
+- Detail anonymization techniques used
+- Clarify what data is logged and how it's protected
 
 ## Example Usage Scenarios
 
@@ -390,4 +585,39 @@ const response = await fetch(`/api/user/posts/${postId}`, {
     content: 'Updated content with new information!'
   })
 });
+```
+
+### Getting All Bookmarked Posts
+```javascript
+const response = await fetch('/api/posts/bookmarks?page=0&size=20', {
+  headers: {
+    'Authorization': 'Bearer ' + userToken
+  }
+});
+const bookmarkedPosts = await response.json();
+```
+
+### Bookmarking a Post
+```javascript
+const response = await fetch(`/api/posts/${postId}/react/bookmark`, {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer ' + userToken
+  }
+});
+const updatedPost = await response.json();
+console.log('Bookmark status:', updatedPost.bookmarked);
+```
+
+### Removing a Bookmark
+```javascript
+// Same endpoint - it toggles the bookmark status
+const response = await fetch(`/api/posts/${postId}/react/bookmark`, {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer ' + userToken
+  }
+});
+const updatedPost = await response.json();
+// If it was bookmarked, it's now unbookmarked
 ```

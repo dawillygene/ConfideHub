@@ -166,7 +166,8 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
-        if (post.isExpired()) {
+        // Allow bookmarking on expired posts, but prevent other reactions
+        if (post.isExpired() && !"bookmark".equalsIgnoreCase(reactionType)) {
             throw new RuntimeException("Cannot react to an expired post");
         }
 

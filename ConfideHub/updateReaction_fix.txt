@@ -6,3 +6,8 @@ i want you create a service and other coponent to make sure we get api with
  a file called progress.md track and store all data changes as  documentation
 
  and aslo gimme the docuentation of the api you have created
+
+
+
+ now i need an api for a user to see only the bookmarked posts and also to be able to remove them to the bookmarked
+ after gimme the docuentation of the api you have created

@@ -253,9 +253,19 @@ const Feeds = () => {
     }));
   }, []);
 
+  // Add callback for sidebar category changes
+  const handleSidebarCategoryChange = useCallback((categoryName) => {
+    setFilter(prev => ({ ...prev, category: categoryName }));
+  }, []);
+
+  // Add callback for sidebar create post action
+  const handleSidebarCreatePost = useCallback(() => {
+    openPostModal();
+  }, [openPostModal]);
+
   return (
     <div className="container mx-auto px-4 py-4 mt-4 flex">
-      <Sidebar />
+      <Sidebar onCategoryChange={handleSidebarCategoryChange} onCreatePost={handleSidebarCreatePost} />
       <div className="main-feed w-full md:w-2/4">
         <div className="bg-white rounded-lg shadow p-4 mb-4 overflow-x-auto">
         <StatusBar />

@@ -81,22 +81,22 @@ const Header = () => {
                   to="/fyp" 
                   className="text-gray-600 hover:text-primary font-medium transition-colors duration-200 flex items-center"
                 >
-                  <i className="fas fa-star mr-2"></i>
+                  <i className="fas fa-magic mr-2"></i>
                   For You
                 </Link>
                 <Link 
                   to="/feed" 
                   className="text-gray-600 hover:text-primary font-medium transition-colors duration-200 flex items-center"
                 >
-                  <i className="fas fa-stream mr-2"></i>
+                  <i className="fas fa-newspaper mr-2"></i>
                   Feeds
                 </Link>
                 <Link 
-                  to="/confessions" 
+                  to="/bookmarks" 
                   className="text-gray-600 hover:text-primary font-medium transition-colors duration-200 flex items-center"
                 >
-                  <i className="fas fa-heart mr-2"></i>
-                  Confessions
+                  <i className="fas fa-bookmark mr-2"></i>
+                  Bookmarks
                 </Link>
               </>
             )}
@@ -104,7 +104,7 @@ const Header = () => {
               to="/resources" 
               className="text-gray-600 hover:text-primary font-medium transition-colors duration-200 flex items-center"
             >
-              <i className="fas fa-book-medical mr-2"></i>
+              <i className="fas fa-hands-helping mr-2"></i>
               Resources
             </Link>
           </nav>
@@ -217,7 +217,7 @@ const Header = () => {
                   className="text-gray-600 hover:text-primary font-medium flex items-center py-2"
                   onClick={closeMobileMenu}
                 >
-                  <i className="fas fa-star mr-3 w-5"></i>
+                  <i className="fas fa-magic mr-3 w-5"></i>
                   For You
                 </Link>
                 <Link
@@ -225,7 +225,7 @@ const Header = () => {
                   className="text-gray-600 hover:text-primary font-medium flex items-center py-2"
                   onClick={closeMobileMenu}
                 >
-                  <i className="fas fa-stream mr-3 w-5"></i>
+                  <i className="fas fa-newspaper mr-3 w-5"></i>
                   Feeds
                 </Link>
                 <Link
@@ -244,7 +244,7 @@ const Header = () => {
               className="text-gray-600 hover:text-primary font-medium flex items-center py-2"
               onClick={closeMobileMenu}
             >
-              <i className="fas fa-book-medical mr-3 w-5"></i>
+              <i className="fas fa-hands-helping mr-3 w-5"></i>
               Resources
             </Link>
 
