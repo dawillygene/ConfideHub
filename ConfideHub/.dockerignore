@@ -1,0 +1,33 @@
+# Exclude target directory
+target/
+
+# Exclude IDE files
+.idea/
+.vscode/
+*.iml
+
+# Exclude version control
+.git/
+.gitignore
+
+# Exclude OS files
+.DS_Store
+Thumbs.db
+
+# Exclude temporary files
+*.tmp
+*.temp
+*.log
+
+# Exclude test files (optional)
+src/test/
+
+# Exclude documentation
+*.md
+
+# Exclude local environment files
+.env
+.env.local
+
+# Exclude uploads directory (will be created in container)
+uploads/
