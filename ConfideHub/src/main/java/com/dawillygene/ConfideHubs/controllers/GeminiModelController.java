@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.ResourceAccessException;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -43,9 +45,24 @@ public class GeminiModelController {
 
     @PostMapping("/generate-title")
     public String generateTitle(@RequestBody String content) {
-        log.info("Generating title for content: {}", content.substring(0, Math.min(content.length(), 50)) + "...");
+        log.info("Generating title for content length: {} characters", content.length());
+        log.debug("Full content preview: {}", content.substring(0, Math.min(content.length(), 200)) + "...");
 
-        String prompt = "Generate a single, emotionally resonant and eye-catching headline (max 15 words) for the following story. The headline must sound human and sincere, like a real blog or story title. Avoid clickbait, special characters, and additional options. Return only the headline, plain text, no punctuation at the end. Content: " + content;
+        // Validate API key
+        if (GEMINI_API_KEY == null || GEMINI_API_KEY.trim().isEmpty()) {
+            log.error("Gemini API key is not configured. Please check your application.properties file.");
+            return "Untitled Post";
+        }
+
+        // Ensure we're using the full content for title generation
+        String fullContent = content.trim();
+        
+        if (fullContent.isEmpty()) {
+            log.warn("Empty content provided for title generation");
+            return "Untitled Post";
+        }
+        
+        String prompt = "Analyze the language of the following content and generate a single, emotionally resonant and eye-catching headline (max 15 words) for this story. IMPORTANT: Return the headline in the SAME LANGUAGE as the original content. The headline must sound human and sincere, like a real blog or story title. Avoid clickbait, special characters, and additional options. Return only the headline, plain text, no punctuation at the end.\n\nFull Content:\n" + fullContent;
 
 
 
@@ -61,17 +78,17 @@ public class GeminiModelController {
 
         Map<String, Object> generationConfig = new HashMap<>();
         generationConfig.put("temperature", 0.7);
-        generationConfig.put("maxOutputTokens", 50);
+        generationConfig.put("maxOutputTokens", 1000);
         generationConfig.put("topP", 0.8);
         generationConfig.put("topK", 40);
         
         requestBody.put("generationConfig", generationConfig);
         
         try {
-            log.info("Making request to Gemini API...");
+            log.info("Making request to Gemini API with content length: {} characters", fullContent.length());
             
             ResponseEntity<Map> response = restClient.post()
-                    .uri("/v1beta/models/gemini-2.0-flash-exp:generateContent?key=" + GEMINI_API_KEY)
+                    .uri("/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY)
                     .header("Content-Type", "application/json")
                     .body(requestBody)
                     .retrieve()
@@ -109,8 +126,11 @@ public class GeminiModelController {
             log.warn("No valid title generated, using fallback");
             return "Untitled Post";
             
+        } catch (ResourceAccessException e) {
+            log.error("Network error connecting to Gemini API: {}. Please check your internet connection and API configuration.", e.getMessage());
+            return "Untitled Post";
         } catch (Exception e) {
-            log.error("Error generating title: ", e);
+            log.error("Unexpected error generating title: ", e);
             return "Untitled Post";
         }
     }
